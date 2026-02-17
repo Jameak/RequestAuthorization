@@ -1,0 +1,74 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11415.280
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Core", "src\Jameak.RequestAuthorization.Core\Jameak.RequestAuthorization.Core.csproj", "{C89C15D2-E8A2-40CA-A30B-209BA0FA4E8F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Adapter.Mediator", "src\Jameak.RequestAuthorization.Adapter.Mediator\Jameak.RequestAuthorization.Adapter.Mediator.csproj", "{C38A5BC4-FBFB-493D-9504-55FFB808C5F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Adapter.MediatR", "src\Jameak.RequestAuthorization.Adapter.MediatR\Jameak.RequestAuthorization.Adapter.MediatR.csproj", "{10019948-A0A9-4F9C-9151-85C49AAE2B43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Adapter.AspNetCore", "src\Jameak.RequestAuthorization.Adapter.AspNetCore\Jameak.RequestAuthorization.Adapter.AspNetCore.csproj", "{2194BC09-0040-41F4-AC7D-E35D1F44E481}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{EAC7A590-6451-4D6B-8994-5E46807DD774}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Sample", "samples\Jameak.RequestAuthorization.Sample\Jameak.RequestAuthorization.Sample.csproj", "{E24DDEC2-E7AB-4457-A6F8-82A35C65C344}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{63ABED07-214B-471F-B69B-942F24953A14}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9C7C3B98-AFE0-4CD5-97A0-3AB48BBFFCB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Core.Tests", "test\Jameak.RequestAuthorization.Core.Tests\Jameak.RequestAuthorization.Core.Tests.csproj", "{0038C774-1AAA-4235-A1EC-2BF6FA95C354}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C89C15D2-E8A2-40CA-A30B-209BA0FA4E8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C89C15D2-E8A2-40CA-A30B-209BA0FA4E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C89C15D2-E8A2-40CA-A30B-209BA0FA4E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C89C15D2-E8A2-40CA-A30B-209BA0FA4E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C38A5BC4-FBFB-493D-9504-55FFB808C5F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C38A5BC4-FBFB-493D-9504-55FFB808C5F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C38A5BC4-FBFB-493D-9504-55FFB808C5F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C38A5BC4-FBFB-493D-9504-55FFB808C5F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10019948-A0A9-4F9C-9151-85C49AAE2B43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10019948-A0A9-4F9C-9151-85C49AAE2B43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10019948-A0A9-4F9C-9151-85C49AAE2B43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10019948-A0A9-4F9C-9151-85C49AAE2B43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2194BC09-0040-41F4-AC7D-E35D1F44E481}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2194BC09-0040-41F4-AC7D-E35D1F44E481}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2194BC09-0040-41F4-AC7D-E35D1F44E481}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2194BC09-0040-41F4-AC7D-E35D1F44E481}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E24DDEC2-E7AB-4457-A6F8-82A35C65C344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E24DDEC2-E7AB-4457-A6F8-82A35C65C344}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E24DDEC2-E7AB-4457-A6F8-82A35C65C344}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E24DDEC2-E7AB-4457-A6F8-82A35C65C344}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0038C774-1AAA-4235-A1EC-2BF6FA95C354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0038C774-1AAA-4235-A1EC-2BF6FA95C354}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0038C774-1AAA-4235-A1EC-2BF6FA95C354}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0038C774-1AAA-4235-A1EC-2BF6FA95C354}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C89C15D2-E8A2-40CA-A30B-209BA0FA4E8F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C38A5BC4-FBFB-493D-9504-55FFB808C5F7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{10019948-A0A9-4F9C-9151-85C49AAE2B43} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{2194BC09-0040-41F4-AC7D-E35D1F44E481} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E24DDEC2-E7AB-4457-A6F8-82A35C65C344} = {EAC7A590-6451-4D6B-8994-5E46807DD774}
+		{0038C774-1AAA-4235-A1EC-2BF6FA95C354} = {9C7C3B98-AFE0-4CD5-97A0-3AB48BBFFCB6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B7E9EBFA-D2B7-45C2-9A3A-CC2F7D5F3769}
+	EndGlobalSection
+EndGlobal

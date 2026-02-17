@@ -1,0 +1,15 @@
+<Project>
+    <PropertyGroup>
+        <Authors>Jameak</Authors>
+        <Copyright>Copyright © Jameak</Copyright>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/Jameak/RequestAuthorization</PackageProjectUrl>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.39" PrivateAssets="All"/>
+    </ItemGroup>
+</Project>
