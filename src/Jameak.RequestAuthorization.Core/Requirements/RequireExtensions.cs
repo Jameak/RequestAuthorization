@@ -19,24 +19,10 @@ public static class RequireExtensions
         => new AnyRequirement([left, right]);
 
     /// <summary>
-    /// Creates a composite requirement that succeeds when any requirement in the enumerable succeeds.
-    /// </summary>
-    public static IRequestAuthorizationRequirement Any(
-        this IEnumerable<IRequestAuthorizationRequirement> requirements)
-        => new AnyRequirement(requirements);
-
-    /// <summary>
     /// Creates a composite requirement that succeeds only when both this requirement and the specified requirement succeed.
     /// </summary>
     public static IRequestAuthorizationRequirement And(
         this IRequestAuthorizationRequirement left,
         IRequestAuthorizationRequirement right)
         => new AllRequirement([left, right]);
-
-    /// <summary>
-    /// Creates a composite requirement that succeeds only when all requirements in the enumerable succeed.
-    /// </summary>
-    public static IRequestAuthorizationRequirement All(
-        this IEnumerable<IRequestAuthorizationRequirement> requirements)
-        => new AllRequirement(requirements);
 }

@@ -4,8 +4,12 @@ namespace Jameak.RequestAuthorization.Core.Results;
 
 internal sealed class DefaultAuthorizedResultHandler : IAuthorizedResultHandler
 {
-    public void OnAuthorized<TRequest>(TRequest message, RequestAuthorizationResult result)
+    public Task OnAuthorized<TRequest>(
+        TRequest message,
+        RequestAuthorizationResult result,
+        CancellationToken cancellationToken)
     {
         // Intentionally left blank.
+        return Task.CompletedTask;
     }
 }

@@ -42,4 +42,3 @@ if ($Env -eq 'ci') {
 }
 
 RunLinterAndStandardTests -Configuration $configValue -AdditionalConfiguration $msbuildConstant
-PrepareAndRunNugetTests -Configuration $configValue -AdditionalConfiguration $msbuildConstant

@@ -1,0 +1,5 @@
+﻿namespace Jameak.RequestAuthorization.Core.Tests.TestUtilities.BuilderTypesForAssemblyScanTests;
+
+internal class BuilderInheritingFromUserProvidedGenericAbstract : GenericAbstractRequestBuilder<TestRequest>
+{
+}

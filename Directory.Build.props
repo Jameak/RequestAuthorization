@@ -9,6 +9,13 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     
+    <PropertyGroup>
+        <PackageVersionCore>1.0.0</PackageVersionCore>
+        <PackageVersionAdapterAspNetCore>1.0.0</PackageVersionAdapterAspNetCore>
+        <PackageVersionAdapterMediator>1.0.0</PackageVersionAdapterMediator>
+        <PackageVersionAdapterMediatR>1.0.0</PackageVersionAdapterMediatR>
+    </PropertyGroup>
+    
     <ItemGroup>
         <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.39" PrivateAssets="All"/>
     </ItemGroup>

@@ -1,18 +1,18 @@
 ﻿using System.Runtime.CompilerServices;
 using Jameak.RequestAuthorization.Core.Abstractions;
-using Jameak.RequestAuthorization.Core.Internal;
+using Jameak.RequestAuthorization.Core.Exceptions;
 using Jameak.RequestAuthorization.Core.Results;
 
 namespace Jameak.RequestAuthorization.Core.Execution;
 
-internal sealed class AuthorizationExecutor : IRequestAuthorizationExecutor
+internal sealed class RequestAuthorizationExecutor : IRequestAuthorizationExecutor
 {
     private readonly AuthorizationHandlerRegistry _registry;
     private readonly IServiceProvider _serviceProvider;
-    // Authorization graphs must be tracked by reference equality, not value equality, in case users make use of 'record' classes.
+    // Requirements must be tracked by reference equality, not value equality, in case users make use of 'record' classes.
     private readonly HashSet<IRequestAuthorizationRequirement> _visited = new(ReferenceEqualityComparer<IRequestAuthorizationRequirement>.Instance);
 
-    public AuthorizationExecutor(
+    public RequestAuthorizationExecutor(
         AuthorizationHandlerRegistry registry,
         IServiceProvider serviceProvider)
     {
@@ -26,12 +26,13 @@ internal sealed class AuthorizationExecutor : IRequestAuthorizationExecutor
     {
         if (!_visited.Add(requirement))
         {
-            return RequestAuthorizationResult.Fail(requirement,
-                failureReason: "Circular requirement detected");
+            throw new CircularRequirementException(requirement);
         }
 
         var handler = _registry.GetHandler(_serviceProvider, requirement);
-        return await handler.CheckRequirementAsync(requirement, token);
+        var result = await handler.CheckRequirementAsync(requirement, token);
+        _visited.Remove(requirement);
+        return result;
     }
 
     internal sealed class ReferenceEqualityComparer<T> : IEqualityComparer<T> where T : class

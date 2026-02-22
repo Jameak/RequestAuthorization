@@ -1,6 +1,7 @@
 ﻿using Jameak.RequestAuthorization.Core.Abstractions;
 using Jameak.RequestAuthorization.Core.Diagnostics;
-using Jameak.RequestAuthorization.Core.Internal;
+using Jameak.RequestAuthorization.Core.Exceptions;
+using Jameak.RequestAuthorization.Core.Execution;
 using Jameak.RequestAuthorization.Core.Results;
 
 namespace Jameak.RequestAuthorization.Core.Requirements;
@@ -37,6 +38,10 @@ internal sealed class AllRequirementHandler : RequestAuthorizationHandlerBase<Al
                 {
                     failed = true;
                 }
+            }
+            catch (Exception ex) when (ExceptionUtility.ShouldNotBeWrapped(ex))
+            {
+                throw;
             }
             catch (Exception ex)
             {

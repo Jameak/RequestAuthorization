@@ -1,6 +1,6 @@
 ﻿using Jameak.RequestAuthorization.Core.Results;
 
-namespace Jameak.RequestAuthorization.Core.Internal;
+namespace Jameak.RequestAuthorization.Core.Execution;
 
 internal interface IRequestAuthorizationChecker<TRequest>
 {

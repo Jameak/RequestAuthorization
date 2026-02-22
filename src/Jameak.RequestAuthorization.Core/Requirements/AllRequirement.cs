@@ -25,5 +25,8 @@ public sealed class AllRequirement : IRequestAuthorizationRequirement
 
         Requirements = reqArray;
     }
+
+    /// <inheritdoc/>
+    public override string ToString() => $"{nameof(AllRequirement)}({Requirements.Count} {nameof(Requirements)})";
 }
 

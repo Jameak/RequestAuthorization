@@ -14,7 +14,7 @@ public interface IAuthorizationPipelineStep<TRequest, TResponse>
     /// <param name="next">The next delegate in the pipeline.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task that represents the response.</returns>
-    ValueTask<TResponse> Handle(
+    Task<TResponse> Handle(
         TRequest message,
         Func<CancellationToken, Task<TResponse>> next,
         CancellationToken cancellationToken);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Frozen;
+using System.Globalization;
 using Jameak.RequestAuthorization.Core.Abstractions;
 using Jameak.RequestAuthorization.Core.Exceptions;
-using Jameak.RequestAuthorization.Core.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Jameak.RequestAuthorization.Core.Execution;
@@ -34,20 +34,21 @@ internal sealed class AuthorizationHandlerRegistry
 
         if (invalidRegistrationTypes.Count > 0)
         {
-            var exceptionDetails = string.Join("\n", invalidRegistrationTypes.OrderBy(kvp => kvp.Key.FullName).Select((kvp, i) => $"""
-                {i}. Requirement type: {kvp.Key.FullName}
-                {new string(' ', $"{i}. ".Length)}Handlers:
-                {new string(' ', $"{i}. ".Length)}{string.Join("\n- ", kvp.Value.OrderBy(handlerType => handlerType.FullName).Select(handlerType => handlerType.FullName))}
+            var exceptionDetails = string.Join('\n', invalidRegistrationTypes.OrderBy(kvp => kvp.Key.FullName).Select((kvp, i) => $"""
+                {(i + 1).ToString(CultureInfo.InvariantCulture)}. Requirement type: {kvp.Key.FullName}
+                {Indent(i + 1)}Handlers:
+                {Indent(i + 1)}- {string.Join($"\n{Indent(i + 1)}- ", kvp.Value.OrderBy(handlerType => handlerType.FullName).Select(handlerType => handlerType.FullName))}
                 """));
 
-
-#pragma warning disable MA0026 // Fix TODO comment
-            // TODO: Should we allow this? If yes, make it configurable on the options whether to allow it or throw.
             throw new InvalidHandlerRegistrationException($"Multiple different handler types registered for one or more requirements.\n{exceptionDetails}");
-#pragma warning restore MA0026 // Fix TODO comment
         }
 
         _map = map.ToFrozenDictionary();
+
+        static string Indent(int index)
+        {
+            return new string(' ', $"{(index + 1).ToString(CultureInfo.InvariantCulture)}. ".Length);
+        }
     }
 
     internal IRequestAuthorizationHandler GetHandler(IServiceProvider serviceProvider, IRequestAuthorizationRequirement requirement)
@@ -56,9 +57,16 @@ internal sealed class AuthorizationHandlerRegistry
 
         if (!_map.TryGetValue(reqType, out var handlerType))
         {
-            throw new InvalidOperationException($"No handler registered for requirement type {reqType.FullName}");
+            throw new MissingHandlerRegistrationException($"No handler registered for requirement type: {reqType.FullName}");
         }
 
-        return (IRequestAuthorizationHandler)serviceProvider.GetRequiredService(handlerType);
+        try
+        {
+            return (IRequestAuthorizationHandler)serviceProvider.GetRequiredService(handlerType);
+        }
+        catch (Exception ex)
+        {
+            throw new RegisteredHandlerInstantiationFailureException($"Retrieving handler '{handlerType.GetType()}' from service provider failed. See inner exception for details.", ex);
+        }
     }
 }

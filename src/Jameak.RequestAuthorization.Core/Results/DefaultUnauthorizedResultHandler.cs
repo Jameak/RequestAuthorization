@@ -7,11 +7,13 @@ internal sealed class DefaultUnauthorizedResultHandler : IUnauthorizedResultHand
 {
     public Task<TResponse> OnUnauthorized<TRequest, TResponse>(
         TRequest message,
-        RequestAuthorizationResult authResult)
+        RequestAuthorizationResult authResult,
+        CancellationToken cancellationToken)
         => throw new UnauthorizedException(authResult);
 
     public Task<TResponse> OnUnauthorizedStream<TRequest, TResponse>(
         TRequest message,
-        RequestAuthorizationResult authResult)
+        RequestAuthorizationResult authResult,
+        CancellationToken cancellationToken)
         => throw new UnauthorizedException(authResult);
 }

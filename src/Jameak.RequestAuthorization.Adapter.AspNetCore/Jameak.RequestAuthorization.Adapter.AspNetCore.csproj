@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageTags>TODO</PackageTags>
-    <PackageDescription>TODO</PackageDescription>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageTags>authorization auth security cqrs mediator pipeline behavior aspnet aspnetcore</PackageTags>
+    <PackageDescription>An ASP.NET Core adapter for Jameak.RequestAuthorization, a strongly-typed request authorization library for mediator-style pipelines.</PackageDescription>
+    <PackageVersion>$(PackageVersionAdapterAspNetCore)</PackageVersion>
   </PropertyGroup>
   
   <PropertyGroup>

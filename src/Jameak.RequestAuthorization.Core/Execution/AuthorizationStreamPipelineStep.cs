@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Jameak.RequestAuthorization.Core.Abstractions;
-using Jameak.RequestAuthorization.Core.Internal;
 
 namespace Jameak.RequestAuthorization.Core.Execution;
 
@@ -29,11 +28,11 @@ internal sealed class AuthorizationStreamPipelineStep<TRequest, TResponse> : IAu
 
         if (!authResult.IsAuthorized)
         {
-            yield return await _unauthorizedResultHandler.OnUnauthorizedStream<TRequest, TResponse>(message, authResult);
+            yield return await _unauthorizedResultHandler.OnUnauthorizedStream<TRequest, TResponse>(message, authResult, cancellationToken);
             yield break;
         }
 
-        _authorizedResultHandler.OnAuthorized(message, authResult);
+        await _authorizedResultHandler.OnAuthorized(message, authResult, cancellationToken);
 
         await foreach (var response in next(cancellationToken).WithCancellation(cancellationToken))
         {

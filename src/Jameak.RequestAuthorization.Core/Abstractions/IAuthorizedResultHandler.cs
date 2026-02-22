@@ -21,7 +21,9 @@ public interface IAuthorizedResultHandler
     /// <typeparam name="TRequest">The request type.</typeparam>
     /// <param name="message">The request instance.</param>
     /// <param name="result">The authorization result.</param>
-    void OnAuthorized<TRequest>(
+    /// <param name="cancellationToken">The cancellation token.</param>
+    Task OnAuthorized<TRequest>(
         TRequest message,
-        RequestAuthorizationResult result);
+        RequestAuthorizationResult result,
+        CancellationToken cancellationToken);
 }

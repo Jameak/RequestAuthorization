@@ -1,4 +1,4 @@
-﻿using Jameak.RequestAuthorization.Core.Internal;
+﻿using Jameak.RequestAuthorization.Core.Execution;
 using Jameak.RequestAuthorization.Core.Results;
 
 namespace Jameak.RequestAuthorization.Core.Abstractions;

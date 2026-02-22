@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using Jameak.RequestAuthorization.Core.Results;
 
 namespace Jameak.RequestAuthorization.Core.Diagnostics;
@@ -19,12 +20,12 @@ public static class AuthorizationDiagnosticExporter
     {
         var sb = new StringBuilder();
         sb.AppendLine("digraph Authorization {");
-        sb.AppendLine("node [shape=box];");
+        sb.AppendLine("  node [shape=box];");
 
         var num = 0;
         EmitNode(sb, root, ref num);
 
-        sb.AppendLine("}");
+        sb.Append("}");
         return sb.ToString();
     }
 
@@ -33,7 +34,7 @@ public static class AuthorizationDiagnosticExporter
         var color = node.IsAuthorized ? "green" : "red";
 
         var nodeId = GetNodeId(ref num);
-        sb.AppendLine($"{nodeId} [label=\"{EscapeGraphvizLabel(node.Requirement.ToString())}\", color={color}];");
+        sb.AppendLine($"  {nodeId} [label=\"{EscapeGraphvizLabel(node.Requirement.ToString())}\", color={color}];");
 
         var diagnostic = node.Diagnostic;
         if (diagnostic == null)
@@ -44,14 +45,14 @@ public static class AuthorizationDiagnosticExporter
         foreach (var evaluated in diagnostic.EvaluatedChildren ?? [])
         {
             var nextNodeId = EmitNode(sb, evaluated, ref num);
-            sb.AppendLine($"{nodeId} -> {nextNodeId}");
+            sb.AppendLine($"  {nodeId} -> {nextNodeId}");
         }
 
         foreach (var skipped in diagnostic.SkippedChildren ?? [])
         {
             var nextNodeId = GetNodeId(ref num);
-            sb.AppendLine($"{nextNodeId} [label=\"{EscapeGraphvizLabel(skipped.ToString())}\", color=orange];");
-            sb.AppendLine($"{nodeId} -> {nextNodeId}");
+            sb.AppendLine($"  {nextNodeId} [label=\"{EscapeGraphvizLabel(skipped.ToString())}\", color=orange];");
+            sb.AppendLine($"  {nodeId} -> {nextNodeId}");
         }
 
         return nodeId;
@@ -59,7 +60,9 @@ public static class AuthorizationDiagnosticExporter
 
     private static string GetNodeId(ref int num)
     {
-        return "n" + num++;
+        var id = "n" + num.ToString(CultureInfo.InvariantCulture);
+        num++;
+        return id;
     }
 
     private static string? EscapeGraphvizLabel(string? toEscape)

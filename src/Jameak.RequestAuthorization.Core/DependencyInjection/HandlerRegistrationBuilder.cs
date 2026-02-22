@@ -4,7 +4,6 @@ using Jameak.RequestAuthorization.Core.Abstractions;
 using Jameak.RequestAuthorization.Core.Configuration;
 using Jameak.RequestAuthorization.Core.Exceptions;
 using Jameak.RequestAuthorization.Core.Execution;
-using Jameak.RequestAuthorization.Core.Internal;
 using Jameak.RequestAuthorization.Core.Requirements;
 using Jameak.RequestAuthorization.Core.Results;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Jameak.RequestAuthorization.Core.DependencyInjection;
 
-internal class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
+internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
 {
     private static readonly Type s_handlerInterface = typeof(IRequestAuthorizationHandler);
     private static readonly Type s_builderInterfaceType = typeof(IRequestAuthorizationRequirementBuilder<>);
@@ -29,7 +28,7 @@ internal class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
 
     internal void RegisterInternalsAndDefaults()
     {
-        Services.AddScoped<IRequestAuthorizationExecutor, AuthorizationExecutor>();
+        Services.AddScoped<IRequestAuthorizationExecutor, RequestAuthorizationExecutor>();
         Services.AddSingleton<AuthorizationHandlerRegistry>();
         AddRequirementHandlerType<AllRequirementHandler, AllRequirement>();
         AddRequirementHandlerType<AnyRequirementHandler, AnyRequirement>();
@@ -83,29 +82,48 @@ internal class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
 
         Services.AddSingleton(new AuthorizationHandlerRegistrar(handlerTuples!));
         return this;
-
-        static IEnumerable<Type> GetBaseTypes(Type type)
-        {
-            var baseType = type.BaseType;
-            while (baseType != null)
-            {
-                yield return baseType;
-                baseType = baseType.BaseType;
-            }
-        }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "MA0015:Specify the parameter name in ArgumentException", Justification = "Argument exceptions related to generic params")]
-    public IHandlerRegistrationBuilder AddRequirementHandlerType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequirement>() where THandler : RequestAuthorizationHandlerBase<TRequirement> where TRequirement : IRequestAuthorizationRequirement
+    [SuppressMessage("Usage", "MA0015:Specify the parameter name in ArgumentException", Justification = "Argument exceptions related to generic params")]
+    public IHandlerRegistrationBuilder AddRequirementHandlerType<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler,
+        TRequirement>()
+        where THandler : RequestAuthorizationHandlerBase<TRequirement>
+        where TRequirement : IRequestAuthorizationRequirement
     {
         if (typeof(TRequirement) == typeof(IRequestAuthorizationRequirement))
         {
             throw new ArgumentException($"Generic argument '{nameof(TRequirement)}' must inherit from {nameof(IRequestAuthorizationRequirement)}.", nameof(TRequirement));
         }
 
-        ThrowIfAbstractOrInterface<THandler>(nameof(THandler));
+        ThrowIfAbstractOrInterfaceOrOpenGeneric(typeof(THandler), nameof(THandler));
         Services.AddScoped<THandler>();
         Services.AddSingleton(new AuthorizationHandlerRegistrar([(typeof(THandler), typeof(TRequirement))]));
+
+        return this;
+    }
+
+    public IHandlerRegistrationBuilder AddRequirementHandlerType(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type handlerType,
+        Type requirementType)
+    {
+        if (requirementType == typeof(IRequestAuthorizationRequirement))
+        {
+            throw new ArgumentException($"Type-argument '{nameof(requirementType)}' must inherit from {nameof(IRequestAuthorizationRequirement)}.", nameof(requirementType));
+        }
+
+        var handlerHandlesRequirement = GetBaseTypes(handlerType)
+            .SingleOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(RequestAuthorizationHandlerBase<>))
+            ?.GetGenericArguments()[0];
+
+        if (handlerHandlesRequirement == null || handlerHandlesRequirement != requirementType)
+        {
+            throw new ArgumentException($"Type-argument '{nameof(handlerType)}' must inherit from {nameof(RequestAuthorizationHandlerBase<>)}<T> and T must match the type-argument '{nameof(requirementType)}'.", nameof(handlerType));
+        }
+
+        ThrowIfAbstractOrInterfaceOrOpenGeneric(handlerType, nameof(handlerType));
+        Services.AddScoped(handlerType);
+        Services.AddSingleton(new AuthorizationHandlerRegistrar([(handlerType, requirementType)]));
 
         return this;
     }
@@ -133,10 +151,34 @@ internal class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
         return this;
     }
 
-    public IHandlerRegistrationBuilder AddRequirementBuilderType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBuilder, TRequest>() where TBuilder : class, IRequestAuthorizationRequirementBuilder<TRequest>
+    public IHandlerRegistrationBuilder AddRequirementBuilderType<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TBuilder,
+        TRequest>()
+        where TBuilder : class, IRequestAuthorizationRequirementBuilder<TRequest>
     {
-        ThrowIfAbstractOrInterface<TBuilder>(nameof(TBuilder));
+        ThrowIfAbstractOrInterfaceOrOpenGeneric(typeof(TBuilder), nameof(TBuilder));
         RegisterWithLifetime<IRequestAuthorizationRequirementBuilder<TRequest>, TBuilder>();
+        return this;
+    }
+
+    [RequiresDynamicCode("Calls System.Type.MakeGenericType(params Type[])")]
+    public IHandlerRegistrationBuilder AddRequirementBuilderType(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)] Type builderType,
+        Type requestType)
+    {
+        var builderHandlesRequestType = builderType.GetInterfaces()
+                .SingleOrDefault(i =>
+                    i.IsGenericType &&
+                    i.GetGenericTypeDefinition() == s_builderInterfaceType &&
+                    i.GetGenericArguments()[0] == requestType);
+
+        if (builderHandlesRequestType == null)
+        {
+            throw new ArgumentException($"Type-argument '{nameof(builderType)}' must implement {nameof(IRequestAuthorizationRequirementBuilder<>)}<T> and T must match the type-argument '{nameof(requestType)}'.", nameof(builderType));
+        }
+
+        ThrowIfAbstractOrInterfaceOrOpenGeneric(builderType, nameof(builderType));
+        RegisterWithLifetime(typeof(IRequestAuthorizationRequirementBuilder<>).MakeGenericType(requestType), builderType);
         return this;
     }
 
@@ -155,23 +197,38 @@ internal class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
         return this;
     }
 
-    public IHandlerRegistrationBuilder AddGlobalRequirementBuilderType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TGlobalHandler>() where TGlobalHandler : class, IGlobalRequestAuthorizationRequirementBuilder
+    public IHandlerRegistrationBuilder AddGlobalRequirementBuilderType<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TGlobalHandler>()
+        where TGlobalHandler : class, IGlobalRequestAuthorizationRequirementBuilder
     {
-        ThrowIfAbstractOrInterface<TGlobalHandler>(nameof(TGlobalHandler));
+        ThrowIfAbstractOrInterfaceOrOpenGeneric(typeof(TGlobalHandler), nameof(TGlobalHandler));
         RegisterWithLifetime<IGlobalRequestAuthorizationRequirementBuilder, TGlobalHandler>();
+        return this;
+    }
+
+    public IHandlerRegistrationBuilder AddGlobalRequirementBuilderType
+        ([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type globalHandlerType)
+    {
+        if (!globalHandlerType.IsAssignableTo(s_globalBuilderInterfaceType))
+        {
+            throw new ArgumentException($"Type-argument '{nameof(globalHandlerType)}' must implement {nameof(IGlobalRequestAuthorizationRequirementBuilder)}.", nameof(globalHandlerType));
+        }
+
+        ThrowIfAbstractOrInterfaceOrOpenGeneric(globalHandlerType, nameof(globalHandlerType));
+        RegisterWithLifetime(typeof(IGlobalRequestAuthorizationRequirementBuilder), globalHandlerType);
         return this;
     }
 
     public IHandlerRegistrationBuilder WithUnauthorizedResultHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler>() where THandler : class, IUnauthorizedResultHandler
     {
-        ThrowIfAbstractOrInterface<THandler>(nameof(THandler));
+        ThrowIfAbstractOrInterfaceOrOpenGeneric(typeof(THandler), nameof(THandler));
         RegisterWithLifetime<IUnauthorizedResultHandler, THandler>();
         return this;
     }
 
     public IHandlerRegistrationBuilder WithAuthorizedResultHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler>() where THandler : class, IAuthorizedResultHandler
     {
-        ThrowIfAbstractOrInterface<THandler>(nameof(THandler));
+        ThrowIfAbstractOrInterfaceOrOpenGeneric(typeof(THandler), nameof(THandler));
         RegisterWithLifetime<IAuthorizedResultHandler, THandler>();
         return this;
     }
@@ -186,12 +243,31 @@ internal class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
         RegisterWithLifetime(typeof(TService), typeof(TImplementation));
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "MA0015:Specify the parameter name in ArgumentException", Justification = "Throw helper related to generic params")]
-    private static void ThrowIfAbstractOrInterface<T>(string genericParamName)
+    private static void ThrowIfAbstractOrInterfaceOrOpenGeneric(Type type, string paramName)
     {
-        if (typeof(T).IsAbstract || typeof(T).IsInterface)
+        if (type.IsAbstract)
         {
-            throw new ArgumentException($"Generic argument '{genericParamName}' cannot be abstract class or interface.", genericParamName);
+            throw new ArgumentException($"Type-argument '{paramName}' cannot be abstract class.", paramName);
+        }
+
+        if (type.IsInterface)
+        {
+            throw new ArgumentException($"Type-argument '{paramName}' cannot be interface.", paramName);
+        }
+
+        if (type.IsGenericTypeDefinition)
+        {
+            throw new ArgumentException($"Type-argument '{paramName}' cannot be open-generic class.", paramName);
+        }
+    }
+
+    private static IEnumerable<Type> GetBaseTypes(Type type)
+    {
+        var baseType = type.BaseType;
+        while (baseType != null)
+        {
+            yield return baseType;
+            baseType = baseType.BaseType;
         }
     }
 }

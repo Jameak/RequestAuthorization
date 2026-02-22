@@ -17,4 +17,8 @@ public enum RequirementBuilderValidationKind
     /// Requires exactly one builder to be registered.
     /// </summary>
     ExactlyOneBuilder,
+    /// <summary>
+    /// Allows zero or one builders to be registered.
+    /// </summary>
+    ZeroOrOneBuilders,
 }

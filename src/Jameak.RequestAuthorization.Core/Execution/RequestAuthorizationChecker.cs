@@ -2,7 +2,6 @@
 using Jameak.RequestAuthorization.Core.Configuration;
 using Jameak.RequestAuthorization.Core.DependencyInjection;
 using Jameak.RequestAuthorization.Core.Exceptions;
-using Jameak.RequestAuthorization.Core.Internal;
 using Jameak.RequestAuthorization.Core.Requirements;
 using Jameak.RequestAuthorization.Core.Results;
 
@@ -35,6 +34,7 @@ internal sealed class RequestAuthorizationChecker<TRequest> : IRequestAuthorizat
         {
             RequirementBuilderValidationKind.AtLeastOneBuilder => _requirementBuilders.Length >= 1,
             RequirementBuilderValidationKind.ExactlyOneBuilder => _requirementBuilders.Length == 1,
+            RequirementBuilderValidationKind.ZeroOrOneBuilders => _requirementBuilders.Length <= 1,
             RequirementBuilderValidationKind.ZeroOrMoreBuilders => true,
             _ => throw new ArgumentOutOfRangeException($"Unknown enum value: {_options.RequirementBuilderValidation}"),
         };
@@ -104,6 +104,10 @@ internal sealed class RequestAuthorizationChecker<TRequest> : IRequestAuthorizat
         try
         {
             authResult = await _executor.ExecuteAsync(requirementToCheck, token);
+        }
+        catch (Exception ex) when (ExceptionUtility.ShouldNotBeWrapped(ex))
+        {
+            throw;
         }
         catch (Exception ex)
         {

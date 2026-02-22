@@ -31,6 +31,16 @@ public interface IHandlerRegistrationBuilder
         where TRequirement : IRequestAuthorizationRequirement;
 
     /// <summary>
+    /// Registers a requirement handler type.
+    /// </summary>
+    /// <param name="handlerType">The handler type. Must inherit from <see cref="RequestAuthorizationHandlerBase{TRequirement}"/> where TRequirement matches '<paramref name="requirementType"/>'</param>
+    /// <param name="requirementType">The requirement type. Must implement <see cref="IRequestAuthorizationRequirement"/></param>
+    /// <returns>The builder for chaining further calls.</returns>
+    IHandlerRegistrationBuilder AddRequirementHandlerType(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type handlerType,
+        Type requirementType);
+
+    /// <summary>
     /// Registers a requirement builder type for a request type.
     /// </summary>
     /// <typeparam name="TBuilder">The builder type.</typeparam>
@@ -41,6 +51,17 @@ public interface IHandlerRegistrationBuilder
         where TBuilder : class, IRequestAuthorizationRequirementBuilder<TRequest>;
 
     /// <summary>
+    /// Registers a requirement builder type for a request type.
+    /// </summary>
+    /// <param name="builderType">The builder type. Must implement <see cref="IRequestAuthorizationRequirementBuilder{TRequest}"/> where TRequest matches '<paramref name="requestType"/>'</param>
+    /// <param name="requestType">The request type.</param>
+    /// <returns>The builder for chaining further calls.</returns>
+    [RequiresDynamicCode("Calls System.Type.MakeGenericType(params Type[])")]
+    IHandlerRegistrationBuilder AddRequirementBuilderType(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.Interfaces)] Type builderType,
+        Type requestType);
+
+    /// <summary>
     /// Registers a global requirement builder type.
     /// </summary>
     /// <typeparam name="TGlobalHandler">The global requirement builder type.</typeparam>
@@ -48,6 +69,14 @@ public interface IHandlerRegistrationBuilder
     IHandlerRegistrationBuilder AddGlobalRequirementBuilderType<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TGlobalHandler>()
         where TGlobalHandler : class, IGlobalRequestAuthorizationRequirementBuilder;
+
+    /// <summary>
+    /// Registers a global requirement builder type.
+    /// </summary>
+    /// <param name="globalHandlerType">The global requirement builder type. Must implement <see cref="IGlobalRequestAuthorizationRequirementBuilder"/>.</param>
+    /// <returns>The builder for chaining further calls.</returns>
+    IHandlerRegistrationBuilder AddGlobalRequirementBuilderType
+        ([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type globalHandlerType);
 
     /// <summary>
     /// Registers requirement handler types discovered in the specified assembly.

@@ -1,5 +1,4 @@
 ﻿using Jameak.RequestAuthorization.Core.Abstractions;
-using Jameak.RequestAuthorization.Core.Internal;
 
 namespace Jameak.RequestAuthorization.Core.Execution;
 
@@ -19,7 +18,7 @@ internal sealed class AuthorizationPipelineStep<TRequest, TResponse> : IAuthoriz
         _unauthorizedResultHandler = unauthorizedResultHandler;
     }
 
-    public async ValueTask<TResponse> Handle(
+    public async Task<TResponse> Handle(
         TRequest message,
         Func<CancellationToken, Task<TResponse>> next,
         CancellationToken cancellationToken)
@@ -28,10 +27,10 @@ internal sealed class AuthorizationPipelineStep<TRequest, TResponse> : IAuthoriz
 
         if (!authResult.IsAuthorized)
         {
-            return await _unauthorizedResultHandler.OnUnauthorized<TRequest, TResponse>(message, authResult);
+            return await _unauthorizedResultHandler.OnUnauthorized<TRequest, TResponse>(message, authResult, cancellationToken);
         }
 
-        _authorizedResultHandler.OnAuthorized(message, authResult);
+        await _authorizedResultHandler.OnAuthorized(message, authResult, cancellationToken);
 
         return await next(cancellationToken);
     }
