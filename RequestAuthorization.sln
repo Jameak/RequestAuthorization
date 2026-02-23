@@ -26,6 +26,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{9C7C3B98-A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Core.Tests", "test\Jameak.RequestAuthorization.Core.Tests\Jameak.RequestAuthorization.Core.Tests.csproj", "{0038C774-1AAA-4235-A1EC-2BF6FA95C354}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Adapter.Mediator.TestBase", "test\Jameak.RequestAuthorization.Adapter.Mediator.TestBase\Jameak.RequestAuthorization.Adapter.Mediator.TestBase.csproj", "{B1870FED-9485-4A0C-8CAF-2FDF6753260B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Adapter.Mediator.Tests.Scoped", "test\Jameak.RequestAuthorization.Adapter.Mediator.Tests.Scoped\Jameak.RequestAuthorization.Adapter.Mediator.Tests.Scoped.csproj", "{29F56BC4-3871-43F1-A820-AAF656B35E98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Adapter.Mediator.Tests.Transient", "test\Jameak.RequestAuthorization.Adapter.Mediator.Tests.Transient\Jameak.RequestAuthorization.Adapter.Mediator.Tests.Transient.csproj", "{E9E6E7CF-6487-4A95-9D5D-500C705CE6D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Adapter.Mediator.Tests.Singleton", "test\Jameak.RequestAuthorization.Adapter.Mediator.Tests.Singleton\Jameak.RequestAuthorization.Adapter.Mediator.Tests.Singleton.csproj", "{E4ED5FF6-8AB0-4099-ABF1-967C60FC89CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mediator.SourceGenerator", "Mediator.SourceGenerator", "{E78AC6CA-A5F1-43E7-8F83-B0D091BE7DF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jameak.RequestAuthorization.Adapter.MediatR.Tests", "test\Jameak.RequestAuthorization.Adapter.MediatR.Tests\Jameak.RequestAuthorization.Adapter.MediatR.Tests.csproj", "{43302B6B-A0ED-485E-B682-2477690C0C33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +68,26 @@ Global
 		{0038C774-1AAA-4235-A1EC-2BF6FA95C354}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0038C774-1AAA-4235-A1EC-2BF6FA95C354}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0038C774-1AAA-4235-A1EC-2BF6FA95C354}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1870FED-9485-4A0C-8CAF-2FDF6753260B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1870FED-9485-4A0C-8CAF-2FDF6753260B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1870FED-9485-4A0C-8CAF-2FDF6753260B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1870FED-9485-4A0C-8CAF-2FDF6753260B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29F56BC4-3871-43F1-A820-AAF656B35E98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29F56BC4-3871-43F1-A820-AAF656B35E98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29F56BC4-3871-43F1-A820-AAF656B35E98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29F56BC4-3871-43F1-A820-AAF656B35E98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9E6E7CF-6487-4A95-9D5D-500C705CE6D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9E6E7CF-6487-4A95-9D5D-500C705CE6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9E6E7CF-6487-4A95-9D5D-500C705CE6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9E6E7CF-6487-4A95-9D5D-500C705CE6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4ED5FF6-8AB0-4099-ABF1-967C60FC89CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4ED5FF6-8AB0-4099-ABF1-967C60FC89CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4ED5FF6-8AB0-4099-ABF1-967C60FC89CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4ED5FF6-8AB0-4099-ABF1-967C60FC89CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43302B6B-A0ED-485E-B682-2477690C0C33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43302B6B-A0ED-485E-B682-2477690C0C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43302B6B-A0ED-485E-B682-2477690C0C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43302B6B-A0ED-485E-B682-2477690C0C33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +99,12 @@ Global
 		{2194BC09-0040-41F4-AC7D-E35D1F44E481} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E24DDEC2-E7AB-4457-A6F8-82A35C65C344} = {EAC7A590-6451-4D6B-8994-5E46807DD774}
 		{0038C774-1AAA-4235-A1EC-2BF6FA95C354} = {9C7C3B98-AFE0-4CD5-97A0-3AB48BBFFCB6}
+		{B1870FED-9485-4A0C-8CAF-2FDF6753260B} = {E78AC6CA-A5F1-43E7-8F83-B0D091BE7DF4}
+		{29F56BC4-3871-43F1-A820-AAF656B35E98} = {E78AC6CA-A5F1-43E7-8F83-B0D091BE7DF4}
+		{E9E6E7CF-6487-4A95-9D5D-500C705CE6D8} = {E78AC6CA-A5F1-43E7-8F83-B0D091BE7DF4}
+		{E4ED5FF6-8AB0-4099-ABF1-967C60FC89CF} = {E78AC6CA-A5F1-43E7-8F83-B0D091BE7DF4}
+		{E78AC6CA-A5F1-43E7-8F83-B0D091BE7DF4} = {9C7C3B98-AFE0-4CD5-97A0-3AB48BBFFCB6}
+		{43302B6B-A0ED-485E-B682-2477690C0C33} = {9C7C3B98-AFE0-4CD5-97A0-3AB48BBFFCB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7E9EBFA-D2B7-45C2-9A3A-CC2F7D5F3769}

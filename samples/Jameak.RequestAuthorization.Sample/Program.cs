@@ -16,8 +16,8 @@ builder.Services.AddRequestAuthorizationCore()
     .AddRequirementBuilderType<SampleVoidRequestAuthRequirementBuilder, SampleVoidRequest>()
     .AddRequirementBuilderType<GetDocumentRequestRequirementBuilder, GetDocumentRequest>()
     .AddRequirementHandlerType<HasReadAccessToDocumentRequirementHandler, HasReadAccessToDocument>()
-    .AddMediatorPipeline()
-    .AddMediatRPipeline();
+    .AddMediatorPipelineAdapter()
+    .AddMediatRPipelineAdapter();
 builder.Services.AddMediator(options =>
 {
     // Instead of using the AddRequestAuthorization DI-registration method, you should register the behaviors like this if you're using NativeAOT.

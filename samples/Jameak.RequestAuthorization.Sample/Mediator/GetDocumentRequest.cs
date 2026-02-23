@@ -1,10 +1,11 @@
-﻿using Jameak.RequestAuthorization.Core.Abstractions;
+﻿using System.Text.Json.Serialization;
+using Jameak.RequestAuthorization.Core.Abstractions;
 using Jameak.RequestAuthorization.Core.Results;
 using Mediator;
 
 namespace Jameak.RequestAuthorization.Sample.Mediator;
 
-public record GetDocumentRequest(Guid DocumentId) : IRequest<GetDocumentResponse>;
+public record GetDocumentRequest([property: JsonRequired] Guid DocumentId) : IRequest<GetDocumentResponse>;
 
 public record GetDocumentResponse(string Content);
 

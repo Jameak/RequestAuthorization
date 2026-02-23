@@ -15,7 +15,7 @@ public partial class RequestAuthorizationCheckerTests
         // Arrange
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddRequestAuthorizationCore();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidBuilderRegistrationException>(async () => await RunCheck(service));
@@ -29,7 +29,7 @@ public partial class RequestAuthorizationCheckerTests
         // Arrange
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddRequestAuthorizationCore(options => options.RequirementBuilderValidation = validationOption);
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var result = await RunCheck(service);
@@ -47,7 +47,7 @@ public partial class RequestAuthorizationCheckerTests
         serviceCollection.AddRequestAuthorizationCore()
             .AddRequirementBuilderType<AlwaysSuccessRequirementBuilder, TestRequest>()
             .AddRequirementBuilderType<AlwaysFailureRequirementBuilder, TestRequest>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidBuilderRegistrationException>(async () => await RunCheck(service));
@@ -65,7 +65,7 @@ public partial class RequestAuthorizationCheckerTests
             .AddRequirementBuilderType<AlwaysFailureRequirementBuilder, TestRequest>()
             .AddRequirementHandlerType<AlwaysFailureRequirementHandler, AlwaysFailureRequirement>()
             .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var result = await RunCheck(service);

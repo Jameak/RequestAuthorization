@@ -28,7 +28,7 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
 
     internal void RegisterInternalsAndDefaults()
     {
-        Services.AddScoped<IRequestAuthorizationExecutor, RequestAuthorizationExecutor>();
+        RegisterWithLifetime<IRequestAuthorizationExecutor, RequestAuthorizationExecutor>();
         Services.AddSingleton<AuthorizationHandlerRegistry>();
         AddRequirementHandlerType<AllRequirementHandler, AllRequirement>();
         AddRequirementHandlerType<AnyRequirementHandler, AnyRequirement>();
@@ -45,7 +45,7 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
     {
         var options = new RequestAuthorizationOptions();
         configure?.Invoke(options);
-        Services.AddTransient(provider => options);
+        Services.AddTransient(provider => options.Clone());
     }
 
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
@@ -72,7 +72,7 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
                 invalidDeclarations.Add(tuple);
             }
 
-            Services.AddScoped(tuple.handlerType);
+            RegisterWithLifetime(tuple.handlerType, tuple.handlerType);
         }
 
         if (invalidDeclarations.Count > 0)
@@ -80,7 +80,7 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
             throw new InvalidHandlerRegistrationException($"Assembly contains invalid handler types. These handler types implement {nameof(RequestAuthorizationHandlerBase<>)} with the generic type {nameof(IRequestAuthorizationRequirement)}. The generic type must inherit from this interface-type instead.\n{string.Join('\n', invalidDeclarations.Select(e => e.handlerType.FullName))}");
         }
 
-        Services.AddSingleton(new AuthorizationHandlerRegistrar(handlerTuples!));
+        Services.AddSingleton(new AuthorizationHandlerRegistrar(handlerTuples));
         return this;
     }
 
@@ -97,7 +97,7 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
         }
 
         ThrowIfAbstractOrInterfaceOrOpenGeneric(typeof(THandler), nameof(THandler));
-        Services.AddScoped<THandler>();
+        RegisterWithLifetime<THandler, THandler>();
         Services.AddSingleton(new AuthorizationHandlerRegistrar([(typeof(THandler), typeof(TRequirement))]));
 
         return this;
@@ -122,7 +122,7 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
         }
 
         ThrowIfAbstractOrInterfaceOrOpenGeneric(handlerType, nameof(handlerType));
-        Services.AddScoped(handlerType);
+        RegisterWithLifetime(handlerType, handlerType);
         Services.AddSingleton(new AuthorizationHandlerRegistrar([(handlerType, requirementType)]));
 
         return this;
@@ -245,14 +245,15 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
 
     private static void ThrowIfAbstractOrInterfaceOrOpenGeneric(Type type, string paramName)
     {
-        if (type.IsAbstract)
-        {
-            throw new ArgumentException($"Type-argument '{paramName}' cannot be abstract class.", paramName);
-        }
 
         if (type.IsInterface)
         {
             throw new ArgumentException($"Type-argument '{paramName}' cannot be interface.", paramName);
+        }
+
+        if (type.IsAbstract)
+        {
+            throw new ArgumentException($"Type-argument '{paramName}' cannot be abstract class.", paramName);
         }
 
         if (type.IsGenericTypeDefinition)

@@ -66,7 +66,7 @@ internal sealed class AuthorizationHandlerRegistry
         }
         catch (Exception ex)
         {
-            throw new RegisteredHandlerInstantiationFailureException($"Retrieving handler '{handlerType.GetType()}' from service provider failed. See inner exception for details.", ex);
+            throw new RegisteredHandlerInstantiationFailureException($"Retrieving handler '{handlerType.FullName}' from service provider failed. See inner exception for details.", ex);
         }
     }
 }

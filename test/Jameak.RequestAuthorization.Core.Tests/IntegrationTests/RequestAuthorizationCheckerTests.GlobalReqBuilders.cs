@@ -17,7 +17,7 @@ public partial class RequestAuthorizationCheckerTests
         serviceCollection.AddRequestAuthorizationCore(option => option.RequirementBuilderValidation = RequirementBuilderValidationKind.ZeroOrMoreBuilders)
             .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
             .AddGlobalRequirementBuilderType<GlobalRequirementBuilderProducingSuccessRequirement>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var checkResult = await RunCheck(service);
@@ -34,7 +34,7 @@ public partial class RequestAuthorizationCheckerTests
         serviceCollection.AddRequestAuthorizationCore(option => option.RequirementBuilderValidation = RequirementBuilderValidationKind.ZeroOrMoreBuilders)
             .AddRequirementHandlerType<AlwaysFailureRequirementHandler, AlwaysFailureRequirement>()
             .AddGlobalRequirementBuilderType<GlobalRequirementBuilderProducingFailureRequirement>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var checkResult = await RunCheck(service);
@@ -50,7 +50,7 @@ public partial class RequestAuthorizationCheckerTests
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddRequestAuthorizationCore(option => option.RequirementBuilderValidation = RequirementBuilderValidationKind.ZeroOrMoreBuilders)
             .AddGlobalRequirementBuilderType<GlobalRequirementBuilderThatAlwaysCrashes>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var checkResult = await RunCheck(service);
@@ -69,7 +69,7 @@ public partial class RequestAuthorizationCheckerTests
             .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
             .AddGlobalRequirementBuilderType<GlobalRequirementBuilderProducingSuccessRequirement>()
             .AddGlobalRequirementBuilderType<AnotherGlobalBuilderProducingSuccessRequirement>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var checkResult = await RunCheck(service);

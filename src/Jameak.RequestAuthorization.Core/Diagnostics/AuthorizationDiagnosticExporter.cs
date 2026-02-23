@@ -25,7 +25,7 @@ public static class AuthorizationDiagnosticExporter
         var num = 0;
         EmitNode(sb, root, ref num);
 
-        sb.Append("}");
+        sb.Append('}');
         return sb.ToString();
     }
 

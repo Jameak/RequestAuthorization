@@ -226,10 +226,20 @@ builder.Services.AddRequestAuthorizationCore()
 The library contains several adapters to integrate the core framework-agnostic request authorization with your mediator-framework of choice.
 
 ### Mediator.SourceGenerator adapter
-To integrate with the [Mediator.SourceGenerator](https://github.com/martinothamar/Mediator) library, add a reference to the `Jameak.RequestAuthorization.Adapter.Mediator` package and register the Mediator-pipeline adapters like so:
+To integrate with the [Mediator.SourceGenerator](https://github.com/martinothamar/Mediator) library, add a reference to the `Jameak.RequestAuthorization.Adapter.Mediator` package and register the Mediator-pipeline adapters as shown below.
+
+Note that the default service-lifetime of Mediator is `Singleton` while the default service-lifetime of this library is `Scoped`. You must decide which lifetime is correct for your usage and configure the same lifetime in both libraries. For example, to configure both as `ServiceLifetime.Scoped`:
 ```csharp
-builder.Services.AddRequestAuthorizationCore()
-    .AddMediatorPipeline();
+// Configuring Mediator.SourceGenerator lifetime:
+builder.Services.AddMediator(options =>
+{
+    options.ServiceLifetime = ServiceLifetime.Scoped;
+});
+
+// Configuring lifetime for this library and registering the adapter:
+builder.Services
+    .AddRequestAuthorizationCore(serviceLifetime: ServiceLifetime.Scoped)
+    .AddMediatorPipelineAdapter();
 ```
 
 > [!IMPORTANT]
@@ -239,7 +249,7 @@ builder.Services.AddRequestAuthorizationCore()
 To integrate with the [MediatR](https://github.com/LuckyPennySoftware/MediatR) library, add a reference to the `Jameak.RequestAuthorization.Adapter.MediatR` package and register the MediatR-pipeline adapters like so:
 ```csharp
 builder.Services.AddRequestAuthorizationCore()
-    .AddMediatRPipeline();
+    .AddMediatRPipelineAdapter();
 ```
 
 ### ASP.NET Core adapter
@@ -248,7 +258,7 @@ If you're already using ASP.NET Core `IAuthorizationRequirement`s or Policies to
 Register the adapters like so:
 ```csharp
 builder.Services.AddRequestAuthorizationCore()
-    .AddAspNetAuthorizationAdapter();
+    .AddAspNetAdapter();
 ```
 
 And then use `AspNetAuthorizationRequirement` or `AspNetAuthorizationPolicyRequirement` to wrap your existing ASP.NET Core authorization logic.

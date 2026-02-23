@@ -1,4 +1,5 @@
-﻿using Jameak.RequestAuthorization.Core.Abstractions;
+﻿using System.Diagnostics.CodeAnalysis;
+using Jameak.RequestAuthorization.Core.Abstractions;
 using Jameak.RequestAuthorization.Core.DependencyInjection;
 using Jameak.RequestAuthorization.Core.Execution;
 using Jameak.RequestAuthorization.Core.Results;
@@ -18,7 +19,7 @@ public class HandlerRegistrationBuilderTests
         // Arrange
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddRequestAuthorizationCore();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var authResultHandler = service.GetRequiredService<IAuthorizedResultHandler>();
@@ -34,10 +35,10 @@ public class HandlerRegistrationBuilderTests
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddRequestAuthorizationCore()
+        serviceCollection.AddRequestAuthorizationCore(serviceLifetime: ServiceLifetime.Singleton)
             .WithAuthorizedResultHandler<OverwrittenAuthBehavior>()
             .WithUnauthorizedResultHandler<OverwrittenUnauthBehavior>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var authResultHandler = service.GetRequiredService<IAuthorizedResultHandler>();
@@ -53,12 +54,12 @@ public class HandlerRegistrationBuilderTests
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddRequestAuthorizationCore()
+        serviceCollection.AddRequestAuthorizationCore(serviceLifetime: ServiceLifetime.Singleton)
             .WithAuthorizedResultHandler<OverwrittenAuthBehavior>()
             .WithUnauthorizedResultHandler<OverwrittenUnauthBehavior>();
 
-        serviceCollection.AddRequestAuthorizationCore();
-        var service = serviceCollection.BuildServiceProvider();
+        serviceCollection.AddRequestAuthorizationCore(serviceLifetime: ServiceLifetime.Singleton);
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var authResultHandler = service.GetRequiredService<IAuthorizedResultHandler>();
@@ -67,6 +68,18 @@ public class HandlerRegistrationBuilderTests
         // Assert
         Assert.Equal(typeof(OverwrittenAuthBehavior), authResultHandler.GetType());
         Assert.Equal(typeof(OverwrittenUnauthBehavior), unauthResultHandler.GetType());
+    }
+
+    [Fact]
+    public void MultipleCoreRegistrationsWithDifferentLifetimesThrowsException()
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddRequestAuthorizationCore(serviceLifetime: ServiceLifetime.Singleton)
+            .WithAuthorizedResultHandler<OverwrittenAuthBehavior>()
+            .WithUnauthorizedResultHandler<OverwrittenUnauthBehavior>();
+
+        Assert.Throws<ArgumentException>(() => serviceCollection.AddRequestAuthorizationCore(serviceLifetime: ServiceLifetime.Scoped));
     }
 
     public class OverwrittenAuthBehavior : IAuthorizedResultHandler
@@ -100,7 +113,7 @@ public class HandlerRegistrationBuilderTests
         Assert.DoesNotContain(serviceCollection, e => e.ServiceType.IsGenericType && e.ServiceType.GetGenericTypeDefinition() == typeof(AnotherGenericRequestHandler<>));
         Assert.DoesNotContain(serviceCollection, e => e.ServiceType.IsGenericType && e.ServiceType.GetGenericTypeDefinition() == typeof(GenericAbstractRequestHandler<>));
         Assert.DoesNotContain(serviceCollection, e => e.ServiceType.IsGenericType && e.ServiceType.GetGenericTypeDefinition() == typeof(GenericRequestHandler<>));
-        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var serviceProvider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
         var registrars = serviceProvider.GetRequiredService<AuthorizationHandlerRegistrar>();
 
         Assert.Single(registrars.TypesToRegister, e => e.handlerType == typeof(AlwaysSuccessRequirementHandler) && e.requirementType == typeof(AlwaysSuccessRequirement));
@@ -178,6 +191,7 @@ public class HandlerRegistrationBuilderTests
     }
 
     [Fact]
+    [SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Test needs to specifically test the non-generic overload.")]
     public void AddRequirementHandlerType_ViaTypeArguments_WithValidAndInvalidTypes_ThrowsOnInvalid()
     {
         // Arrange
@@ -204,7 +218,7 @@ public class HandlerRegistrationBuilderTests
         Assert.Single(serviceCollection, e => e.ServiceType == typeof(AnotherGenericRequestHandler<object>));
         Assert.Single(serviceCollection, e => e.ServiceType == typeof(GenericRequestHandler<AlwaysSuccessRequirement>));
 
-        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var serviceProvider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
         var registrars = serviceProvider.GetServices<AuthorizationHandlerRegistrar>().ToList();
 
         Assert.Single(registrars, e => e.TypesToRegister.Any(e => e.handlerType == typeof(AnotherGenericRequestHandler<object>) && e.requirementType == typeof(AlwaysSuccessRequirement)));
@@ -241,6 +255,7 @@ public class HandlerRegistrationBuilderTests
     }
 
     [Fact]
+    [SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Test needs to specifically test the non-generic overload.")]
     public void AddRequirementBuilderType_ViaTypeArguments_WithValidAndInvalidTypes_ThrowsOnInvalid()
     {
         // Arrange
@@ -307,6 +322,7 @@ public class HandlerRegistrationBuilderTests
     }
 
     [Fact]
+    [SuppressMessage("Usage", "CA2263:Prefer generic overload when type is known", Justification = "Test needs to specifically test the non-generic overload.")]
     public void AddGlobalRequirementBuilderType_ViaTypeArguments_WithValidAndInvalidTypes_ThrowsOnInvalid()
     {
         // Arrange

@@ -12,4 +12,9 @@ public sealed class RequestAuthorizationOptions
     /// <see cref="IRequestAuthorizationRequirementBuilder{TRequest}"/> implementations.
     /// </summary>
     public RequirementBuilderValidationKind RequirementBuilderValidation { get; set; } = RequirementBuilderValidationKind.ExactlyOneBuilder;
+
+    internal RequestAuthorizationOptions Clone()
+    {
+        return (RequestAuthorizationOptions)MemberwiseClone();
+    }
 }

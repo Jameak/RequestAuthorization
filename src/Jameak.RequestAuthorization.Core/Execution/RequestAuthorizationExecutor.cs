@@ -9,8 +9,7 @@ internal sealed class RequestAuthorizationExecutor : IRequestAuthorizationExecut
 {
     private readonly AuthorizationHandlerRegistry _registry;
     private readonly IServiceProvider _serviceProvider;
-    // Requirements must be tracked by reference equality, not value equality, in case users make use of 'record' classes.
-    private readonly HashSet<IRequestAuthorizationRequirement> _visited = new(ReferenceEqualityComparer<IRequestAuthorizationRequirement>.Instance);
+    private static readonly AsyncLocal<HashSet<IRequestAuthorizationRequirement>?> s_visited = new();
 
     public RequestAuthorizationExecutor(
         AuthorizationHandlerRegistry registry,
@@ -24,15 +23,34 @@ internal sealed class RequestAuthorizationExecutor : IRequestAuthorizationExecut
         IRequestAuthorizationRequirement requirement,
         CancellationToken token)
     {
-        if (!_visited.Add(requirement))
+        var isRoot = false;
+
+        if (s_visited.Value is null)
         {
-            throw new CircularRequirementException(requirement);
+            // Requirements must be tracked by reference equality, not value equality, in case users make use of 'record' classes.
+            s_visited.Value = new HashSet<IRequestAuthorizationRequirement>(ReferenceEqualityComparer<IRequestAuthorizationRequirement>.Instance);
+            isRoot = true;
         }
 
-        var handler = _registry.GetHandler(_serviceProvider, requirement);
-        var result = await handler.CheckRequirementAsync(requirement, token);
-        _visited.Remove(requirement);
-        return result;
+        try
+        {
+            if (!s_visited.Value.Add(requirement))
+            {
+                throw new CircularRequirementException(requirement);
+            }
+
+            var handler = _registry.GetHandler(_serviceProvider, requirement);
+            var result = await handler.CheckRequirementAsync(requirement, token);
+            s_visited.Value.Remove(requirement);
+            return result;
+        }
+        finally
+        {
+            if (isRoot)
+            {
+                s_visited.Value = null;
+            }
+        }
     }
 
     internal sealed class ReferenceEqualityComparer<T> : IEqualityComparer<T> where T : class

@@ -22,7 +22,7 @@ public static class HandlerRegistrationBuilderExtensions
     /// });
     /// </code>
     /// </remarks>
-    public static IHandlerRegistrationBuilder AddMediatorPipeline(this IHandlerRegistrationBuilder builder)
+    public static IHandlerRegistrationBuilder AddMediatorPipelineAdapter(this IHandlerRegistrationBuilder builder)
     {
         builder.Services.Add(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(RequestAuthorizationPipelineBehavior<,>), builder.ServiceLifetime));
         builder.Services.Add(new ServiceDescriptor(typeof(IStreamPipelineBehavior<,>), typeof(RequestAuthorizationStreamPipelineBehavior<,>), builder.ServiceLifetime));

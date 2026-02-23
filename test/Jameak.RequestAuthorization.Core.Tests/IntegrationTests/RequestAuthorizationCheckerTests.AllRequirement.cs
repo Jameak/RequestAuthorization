@@ -1,5 +1,6 @@
 ﻿using Jameak.RequestAuthorization.Core.Abstractions;
 using Jameak.RequestAuthorization.Core.DependencyInjection;
+using Jameak.RequestAuthorization.Core.Exceptions;
 using Jameak.RequestAuthorization.Core.Requirements;
 using Jameak.RequestAuthorization.Core.Tests.TestUtilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,7 @@ public partial class RequestAuthorizationCheckerTests
         serviceCollection.AddRequestAuthorizationCore()
             .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
             .AddRequirementBuilderType<AllRequirementWithOnlySuccessBuilder, TestRequest>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var checkResult = await RunCheck(service);
@@ -44,7 +45,7 @@ public partial class RequestAuthorizationCheckerTests
             .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
             .AddRequirementHandlerType<AlwaysFailureRequirementHandler, AlwaysFailureRequirement>()
             .AddRequirementBuilderType<AllRequirementWithBothSuccessAndFailureFailFirstBuilder, TestRequest>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var checkResult = await RunCheck(service);
@@ -72,7 +73,7 @@ public partial class RequestAuthorizationCheckerTests
             .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
             .AddRequirementHandlerType<AlwaysFailureRequirementHandler, AlwaysFailureRequirement>()
             .AddRequirementBuilderType<AllRequirementWithBothSuccessAndFailureFailLastBuilder, TestRequest>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var checkResult = await RunCheck(service);
@@ -100,7 +101,7 @@ public partial class RequestAuthorizationCheckerTests
             .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
             .AddRequirementHandlerType<CrashingRequirementHandler, CrashingRequirement>()
             .AddRequirementBuilderType<AllRequirementWithSuccessAndCrashingRequirementBuilder, TestRequest>();
-        var service = serviceCollection.BuildServiceProvider();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
         var checkResult = await RunCheck(service);
@@ -118,5 +119,18 @@ public partial class RequestAuthorizationCheckerTests
         {
             return Task.FromResult(Require.All(new AlwaysSuccessRequirement(), new CrashingRequirement()));
         }
+    }
+
+    [Fact]
+    public async Task AllRequirementWithNestedRequirementWithoutHandlerProducesException()
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddRequestAuthorizationCore()
+            .AddRequirementBuilderType<AllRequirementWithOnlySuccessBuilder, TestRequest>();
+        var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
+
+        // Act & Assert
+        await Assert.ThrowsAsync<MissingHandlerRegistrationException>(async () => await RunCheck(service));
     }
 }

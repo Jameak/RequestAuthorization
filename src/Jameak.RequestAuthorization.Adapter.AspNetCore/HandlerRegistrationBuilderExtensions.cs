@@ -12,7 +12,7 @@ public static class HandlerRegistrationBuilderExtensions
     /// </summary>
     /// <param name="builder">The registration builder.</param>
     /// <returns>The builder for chaining calls</returns>
-    public static IHandlerRegistrationBuilder AddAspNetAuthorizationAdapter(this IHandlerRegistrationBuilder builder)
+    public static IHandlerRegistrationBuilder AddAspNetAdapter(this IHandlerRegistrationBuilder builder)
     {
         builder.AddRequirementHandlerType<AspNetAuthorizationRequirementHandler, AspNetAuthorizationRequirement>();
         builder.AddRequirementHandlerType<AspNetAuthorizationPolicyRequirementHandler, AspNetAuthorizationPolicyRequirement>();
