@@ -41,9 +41,10 @@ public sealed class AspNetAuthorizationRequirementHandler : RequestAuthorization
             return RequestAuthorizationResult.Success(requirement, context: aspNetAuthResult);
         }
 
+        var reasons = string.Join('\n', aspNetAuthResult.Failure.FailureReasons?.Select(e => e.Message) ?? [""]);
         return RequestAuthorizationResult.Fail(
             requirement,
-            string.Join('\n', aspNetAuthResult.Failure.FailureReasons.Select(e => e.Message)),
-            context: aspNetAuthResult);
+            context: aspNetAuthResult,
+            failureReason: string.IsNullOrEmpty(reasons) ? null : reasons);
     }
 }

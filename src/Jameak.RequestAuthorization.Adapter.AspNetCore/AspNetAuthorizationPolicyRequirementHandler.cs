@@ -52,9 +52,10 @@ public sealed class AspNetAuthorizationPolicyRequirementHandler : RequestAuthori
             return RequestAuthorizationResult.Success(requirement, context: aspNetAuthResult);
         }
 
+        var reasons = string.Join('\n', aspNetAuthResult.Failure.FailureReasons?.Select(e => e.Message) ?? [""]);
         return RequestAuthorizationResult.Fail(
             requirement,
             context: aspNetAuthResult,
-            failureReason: string.Join('\n', aspNetAuthResult.Failure.FailureReasons.Select(e => e.Message)));
+            failureReason: string.IsNullOrEmpty(reasons) ? null : reasons);
     }
 }
