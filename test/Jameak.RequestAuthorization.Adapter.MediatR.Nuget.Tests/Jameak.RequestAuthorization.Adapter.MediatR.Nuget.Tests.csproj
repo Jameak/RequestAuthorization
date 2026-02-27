@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Jameak.RequestAuthorization.Adapter.MediatR" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile
+        Include="..\Jameak.RequestAuthorization.Adapter.MediatR.Tests\**\*.cs" Link="%(RecursiveDir)%(Filename)%(Extension)"
+        Exclude="..\Jameak.RequestAuthorization.Adapter.MediatR.Tests\obj\**\*.cs;..\Jameak.RequestAuthorization.Adapter.MediatR.Tests\bin\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jameak.RequestAuthorization.Core.Nuget.Tests\Jameak.RequestAuthorization.Core.Nuget.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

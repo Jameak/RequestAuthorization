@@ -18,7 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Jameak.RequestAuthorization.Adapter.Mediator.TestBase\Jameak.RequestAuthorization.Adapter.Mediator.TestBase.csproj" />
+    <Compile
+        Include="..\Jameak.RequestAuthorization.Adapter.Mediator.Tests.Singleton\**\*.cs" Link="%(RecursiveDir)%(Filename)%(Extension)"
+        Exclude="..\Jameak.RequestAuthorization.Adapter.Mediator.Tests.Singleton\obj\**\*.cs;..\Jameak.RequestAuthorization.Adapter.Mediator.Tests.Singleton\bin\**\*.cs"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jameak.RequestAuthorization.Adapter.Mediator.Nuget.TestBase\Jameak.RequestAuthorization.Adapter.Mediator.Nuget.TestBase.csproj" />
   </ItemGroup>
 
   <ItemGroup>

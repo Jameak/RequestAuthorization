@@ -1,0 +1,26 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="DotNet.ReproducibleBuilds" Version="1.2.39" />
+    <PackageVersion Include="Mediator.Abstractions" Version="3.0.1" />
+    <PackageVersion Include="Mediator.SourceGenerator" Version="3.0.1" />
+    <PackageVersion Include="MediatR" Version="12.5.0" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.224" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authorization" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageVersion Include="Jameak.RequestAuthorization.Core" Version="$(PackageVersionCore)" />
+    <PackageVersion Include="Jameak.RequestAuthorization.Adapter.AspNetCore" Version="$(PackageVersionAdapterAspNetCore)" />
+    <PackageVersion Include="Jameak.RequestAuthorization.Adapter.Mediator" Version="$(PackageVersionAdapterMediator)" />
+    <PackageVersion Include="Jameak.RequestAuthorization.Adapter.MediatR" Version="$(PackageVersionAdapterMediatR)" />
+  </ItemGroup>
+</Project>

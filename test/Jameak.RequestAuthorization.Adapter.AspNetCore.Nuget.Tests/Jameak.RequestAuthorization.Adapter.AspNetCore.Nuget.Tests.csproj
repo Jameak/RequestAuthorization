@@ -13,10 +13,13 @@
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Jameak.RequestAuthorization.Adapter.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Jameak.RequestAuthorization.Adapter.AspNetCore\Jameak.RequestAuthorization.Adapter.AspNetCore.csproj" />
+    <Compile
+        Include="..\Jameak.RequestAuthorization.Adapter.AspNetCore.Tests\**\*.cs" Link="%(RecursiveDir)%(Filename)%(Extension)"
+        Exclude="..\Jameak.RequestAuthorization.Adapter.AspNetCore.Tests\obj\**\*.cs;..\Jameak.RequestAuthorization.Adapter.AspNetCore.Tests\bin\**\*.cs"/>
   </ItemGroup>
 
   <ItemGroup>

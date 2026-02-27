@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Jameak.RequestAuthorization.Core.Abstractions;
 using Jameak.RequestAuthorization.Core.Diagnostics;
 
@@ -90,6 +91,7 @@ public sealed class RequestAuthorizationResult
         };
     }
 
+    [ExcludeFromCodeCoverage]
     private string DebuggerDisplay
         => IsAuthorized
             ? $"Authorized ({Requirement?.GetType().Name})"

@@ -7,6 +7,7 @@
         <PackageProjectUrl>https://github.com/Jameak/RequestAuthorization</PackageProjectUrl>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <DefineConstants>$(ExtraDefineConstants);$(DefineConstants)</DefineConstants>
     </PropertyGroup>
     
     <PropertyGroup>
@@ -17,6 +18,6 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.39" PrivateAssets="All"/>
+        <PackageReference Include="DotNet.ReproducibleBuilds" PrivateAssets="All" />
     </ItemGroup>
 </Project>
