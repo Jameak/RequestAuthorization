@@ -1,4 +1,9 @@
-﻿namespace Jameak.RequestAuthorization.Sample;
+﻿namespace Jameak.RequestAuthorization.MediatRSample.Services;
+
+public interface IAuthService
+{
+    bool IsAllowed<T>(T toCheck);
+}
 
 public class FakeAuthService : IAuthService
 {
@@ -11,6 +16,4 @@ public class FakeAuthService : IAuthService
             return s_random.NextDouble() < 0.5;
         }
     }
-
-    public Task<bool> UserCanAccessDocument(Guid userId, Guid documentId) => throw new NotImplementedException();
 }

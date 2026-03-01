@@ -1,7 +1,7 @@
 ﻿using Jameak.RequestAuthorization.Core.Abstractions;
 using Jameak.RequestAuthorization.Core.Results;
 
-namespace Jameak.RequestAuthorization.Sample.Requirements;
+namespace Jameak.RequestAuthorization.MediatRSample.Requirements;
 
 public sealed class MustBeAuthenticatedRequirementHandler : RequestAuthorizationHandlerBase<MustBeAuthenticatedRequirement>
 {

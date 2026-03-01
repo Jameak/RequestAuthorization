@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Jameak.RequestAuthorization.MediatRSample": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "debug/routes",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:51741;http://localhost:51742"
+    }
+  }
+}

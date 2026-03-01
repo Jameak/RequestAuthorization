@@ -12,14 +12,29 @@ This library provides a structured way to:
 And it integrates with any mediator-style pipeline and is NativeAOT compatible.
 
 ## Packages
-| Package | NuGet | Dependency |
-| ------- | ----- | -----------|
-| Jameak.RequestAuthorization.Core | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Core.svg?label=NuGet) | Microsoft.Extensions.DependencyInjection.Abstractions<ul><li>≥ 10.0.0</li></ul> |
-| Jameak.RequestAuthorization.Adapter.AspNetCore | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.AspNetCore.svg?label=NuGet) | Microsoft.AspNetCore.Authorization<ul><li>≥ 10.0.0</li></ul>Microsoft.AspNetCore.Http.Abstractions<ul><li>≥ 2.3.0</li></ul> |
-| Jameak.RequestAuthorization.Adapter.Mediator | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.Mediator.svg?label=NuGet) | [Mediator.Abstractions](https://github.com/martinothamar/Mediator)<ul><li>≥ 3.0.1</li></ul> |
-| Jameak.RequestAuthorization.Adapter.MediatR | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.MediatR.svg?label=NuGet) | [MediatR](https://github.com/LuckyPennySoftware/MediatR)<ul><li>≥ 12.5.0</li></ul> |
+| Package | NuGet |
+|---------|--------|
+| Jameak.RequestAuthorization.Core | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Core.svg?label=NuGet) |
+| Jameak.RequestAuthorization.Adapter.AspNetCore | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.AspNetCore.svg?label=NuGet) |
+| Jameak.RequestAuthorization.Adapter.Mediator | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.Mediator.svg?label=NuGet) |
+| Jameak.RequestAuthorization.Adapter.MediatR | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.MediatR.svg?label=NuGet) |
 
 Need to integrate with a different mediator-style pipeline library? See [this section](#writing-your-own-mediator-adapter) for details on how.
+
+<details>
+<summary><strong>Click to see dependencies</strong></summary>
+
+- **Jameak.RequestAuthorization.Core**
+  - Microsoft.Extensions.DependencyInjection.Abstractions ≥ 10.0.0
+- **Jameak.RequestAuthorization.Adapter.AspNetCore**
+  - Microsoft.AspNetCore.Authorization ≥ 10.0.0
+  - Microsoft.AspNetCore.Http.Abstractions ≥ 2.3.0
+- **Jameak.RequestAuthorization.Adapter.Mediator**
+  - Mediator.Abstractions ≥ 3.0.1
+- **Jameak.RequestAuthorization.Adapter.MediatR**
+  - MediatR ≥ 12.5.0
+ 
+</details>
 
 ## Getting started
 Authorization in this library consists of 3 parts:
@@ -243,7 +258,7 @@ builder.Services
 ```
 
 > [!IMPORTANT]
-> When using NativeAOT with Mediator, you must instead register the pipeline behaviors in the `AddMediator(...)` call as described in the Mediator documentation. See the xmldoc documentation [on this class TODO LINK]() for more information.
+> When using NativeAOT with Mediator, you must instead register the pipeline behaviors in the `AddMediator(...)` call as described in the Mediator documentation. See the xmldoc documentation [on this class](src/Jameak.RequestAuthorization.Adapter.Mediator/HandlerRegistrationBuilderExtensions.cs) and the [NativeAOT sample](samples/Jameak.RequestAuthorization.MediatorNativeAotSample) for more information.
 
 ### MediatR adapter
 To integrate with the [MediatR](https://github.com/LuckyPennySoftware/MediatR) library, add a reference to the `Jameak.RequestAuthorization.Adapter.MediatR` package and register the MediatR-pipeline adapters like so:
@@ -267,7 +282,7 @@ And then use `AspNetAuthorizationRequirement` or `AspNetAuthorizationPolicyRequi
 > You must also register a `IHttpContextAccessor` in your dependency container. This is usually done via the standard `builder.Services.AddHttpContextAccessor()` ASP.NET Core extension method.
 
 ### Writing your own mediator adapter
-To integrate with another mediator library, simply wrap the core `IAuthorizationPipelineStep` inside a pipeline behavior appropriate for your framework. See [TODO LINK]() and [TODO LINK]() for examples.
+To integrate with another mediator library, simply wrap the core `IAuthorizationPipelineStep` inside a pipeline behavior appropriate for your framework. See the [Mediator adapter](src/Jameak.RequestAuthorization.Adapter.Mediator) and [MediatR adapter](src/Jameak.RequestAuthorization.Adapter.MediatR) implementations for examples.
 
 ## Why use this library rather than standard ASP.NET Core authorization
 `Jameak.RequestAuthorization` is designed:

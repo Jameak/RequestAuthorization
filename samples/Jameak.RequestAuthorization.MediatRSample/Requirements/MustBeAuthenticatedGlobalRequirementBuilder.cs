@@ -1,8 +1,8 @@
 ﻿using Jameak.RequestAuthorization.Core.Abstractions;
 
-namespace Jameak.RequestAuthorization.Sample.Requirements;
+namespace Jameak.RequestAuthorization.MediatRSample.Requirements;
 
-public class MustBeAuthenticatedRequirementBuilder : IGlobalRequestAuthorizationRequirementBuilder
+public class MustBeAuthenticatedGlobalRequirementBuilder : IGlobalRequestAuthorizationRequirementBuilder
 {
     public Task<IRequestAuthorizationRequirement> BuildRequirementAsync<TRequest>(
         TRequest request,

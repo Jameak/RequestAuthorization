@@ -1,0 +1,6 @@
+@Jameak.RequestAuthorization.MediatRSample_HostAddress = https://localhost:51741
+
+GET {{Jameak.RequestAuthorization.MediatRSample_HostAddress}}/api/Sample/GetSample
+Accept: application/json
+
+###

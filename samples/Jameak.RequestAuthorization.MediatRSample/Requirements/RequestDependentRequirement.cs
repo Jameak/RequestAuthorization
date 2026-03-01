@@ -1,7 +1,7 @@
 ﻿using Jameak.RequestAuthorization.Core.Abstractions;
-using Jameak.RequestAuthorization.Sample.Mediator;
+using Jameak.RequestAuthorization.MediatRSample.MediatR;
 
-namespace Jameak.RequestAuthorization.Sample.Requirements;
+namespace Jameak.RequestAuthorization.MediatRSample.Requirements;
 
 public class RequestDependentRequirement : IRequestAuthorizationRequirement
 {

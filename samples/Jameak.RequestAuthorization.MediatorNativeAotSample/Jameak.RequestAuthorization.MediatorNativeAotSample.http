@@ -1,0 +1,6 @@
+@Jameak.RequestAuthorization.MediatorNativeAotSample_HostAddress = http://localhost:5289
+
+GET {{Jameak.RequestAuthorization.MediatorNativeAotSample_HostAddress}}/documents/?documentid=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+Accept: application/json
+
+###
