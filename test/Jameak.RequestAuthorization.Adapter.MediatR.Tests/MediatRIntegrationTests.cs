@@ -32,9 +32,14 @@ public class MediatRIntegrationTests
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var requestObj = new SampleRequest();
 
-        // Act & Assert
-        var result = await mediator.Send(requestObj); // Should not throw auth error
-        Assert.NotNull(result);
+        // Act & Assert. Should not throw auth exception.
+        var exception = await Record.ExceptionAsync(async () =>
+        {
+            var result = await mediator.Send(requestObj);
+            Assert.NotNull(result);
+        });
+
+        Assert.Null(exception);
     }
 
     [Theory]

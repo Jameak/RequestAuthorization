@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Jameak.RequestAuthorization.Adapter.Mediator.TestBase;
 using Jameak.RequestAuthorization.Core.Abstractions;
 using Jameak.RequestAuthorization.Core.DependencyInjection;
 using Jameak.RequestAuthorization.Core.Exceptions;
@@ -10,6 +11,7 @@ namespace Jameak.RequestAuthorization.Adapter.Mediator.Tests;
 
 public class BaseMediatorIntegrationTest
 {
+    [AssertionMethod]
     public static async Task SampleRequest_RunPipelineNotAot_SuccessRequirementProducesResult(ServiceCollection serviceCollection, ServiceLifetime serviceLifetime)
     {
         // Arrange
@@ -22,11 +24,17 @@ public class BaseMediatorIntegrationTest
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var requestObj = new SampleRequest();
 
-        // Act & Assert
-        var result = await mediator.Send(requestObj); // Should not throw auth error
-        Assert.NotNull(result);
+        // Act & Assert. Should not throw auth exception.
+        var exception = await Record.ExceptionAsync(async () =>
+        {
+            var result = await mediator.Send(requestObj);
+            Assert.NotNull(result);
+        });
+
+        Assert.Null(exception);
     }
 
+    [AssertionMethod]
     public static async Task SampleRequest_RunPipelineNotAot_FailingRequirementProducesUnauthException(ServiceCollection serviceCollection, ServiceLifetime serviceLifetime)
     {
         // Arrange
@@ -77,6 +85,7 @@ public class BaseMediatorIntegrationTest
         }
     }
 
+    [AssertionMethod]
     public static async Task SampleVoidRequest_RunPipelineNotAot_SuccessRequirementProducesResult(ServiceCollection serviceCollection, ServiceLifetime serviceLifetime)
     {
         // Arrange
@@ -89,11 +98,17 @@ public class BaseMediatorIntegrationTest
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var requestObj = new SampleVoidRequest();
 
-        // Act & Assert
-        var result = await mediator.Send(requestObj); // Should not throw auth error
-        Assert.Equal(Unit.Value, result);
+        // Act & Assert. Should not throw auth exception.
+        var exception = await Record.ExceptionAsync(async () =>
+        {
+            var result = await mediator.Send(requestObj);
+            Assert.Equal(Unit.Value, result);
+        });
+
+        Assert.Null(exception);
     }
 
+    [AssertionMethod]
     public static async Task SampleVoidRequest_RunPipelineNotAot_FailingRequirementProducesUnauthException(ServiceCollection serviceCollection, ServiceLifetime serviceLifetime)
     {
         // Arrange
@@ -140,6 +155,7 @@ public class BaseMediatorIntegrationTest
         }
     }
 
+    [AssertionMethod]
     public static async Task SampleStreamRequest_RunPipelineNotAot_SuccessRequirementProducesResult(ServiceCollection serviceCollection, ServiceLifetime serviceLifetime)
     {
         // Arrange
@@ -152,11 +168,17 @@ public class BaseMediatorIntegrationTest
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var requestObj = new SampleStreamRequest();
 
-        // Act & Assert
-        var result = await mediator.CreateStream(requestObj).ToListAsync(); // Should not throw auth error
-        Assert.NotEmpty(result);
+        // Act & Assert. Should not throw auth exception.
+        var exception = await Record.ExceptionAsync(async () =>
+        {
+            var result = await mediator.CreateStream(requestObj).ToListAsync(); // Should not throw auth error
+            Assert.NotEmpty(result);
+        });
+
+        Assert.Null(exception);
     }
 
+    [AssertionMethod]
     public static async Task SampleStreamRequest_RunPipelineNotAot_FailingRequirementProducesUnauthException(ServiceCollection serviceCollection, ServiceLifetime serviceLifetime)
     {
         // Arrange

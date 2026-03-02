@@ -75,11 +75,12 @@ function RunLinterAndStandardTests{
          [string] $AdditionalConfiguration
     )
     
+    # dotnet format --exclude necessary due to same issue as https://github.com/dotnet/sdk/issues/51136
     if ($Env -eq 'ci') {
-        Exec { & dotnet format style --verify-no-changes }
-        Exec { & dotnet format analyzers --verify-no-changes }
+        Exec { & dotnet format style --verify-no-changes --exclude "./samples/Jameak.RequestAuthorization.MediatorNativeAotSample/Program.cs" }
+        Exec { & dotnet format analyzers --verify-no-changes --exclude "./samples/Jameak.RequestAuthorization.MediatorNativeAotSample/Program.cs" }
     } else {
-        Exec { & dotnet format --verify-no-changes }
+        Exec { & dotnet format --verify-no-changes --exclude "./samples/Jameak.RequestAuthorization.MediatorNativeAotSample/Program.cs" }
     }
 
     Exec { & dotnet build -c $Configuration $AdditionalConfiguration  }
