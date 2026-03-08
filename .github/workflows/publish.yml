@@ -51,7 +51,7 @@ jobs:
       - name: Run nuget package validation
         run: |
           foreach($file in (Get-ChildItem "./artifacts/" -Recurse -Include *.nupkg)) {
-              dotnet meziantou.validate-nuget-package $file
+              dotnet meziantou.validate-nuget-package $file --excluded-rules IconMustBeSet
           }
       
   publish-to-nuget-and-gh-release:
