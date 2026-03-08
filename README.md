@@ -14,10 +14,10 @@ And it integrates with any mediator-style pipeline and is NativeAOT compatible.
 ## Packages
 | Package | NuGet |
 |---------|--------|
-| Jameak.RequestAuthorization.Core | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Core.svg?label=NuGet) |
-| Jameak.RequestAuthorization.Adapter.AspNetCore | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.AspNetCore.svg?label=NuGet) |
-| Jameak.RequestAuthorization.Adapter.Mediator | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.Mediator.svg?label=NuGet) |
-| Jameak.RequestAuthorization.Adapter.MediatR | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.MediatR.svg?label=NuGet) |
+| Jameak.RequestAuthorization.Core | [![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Core.svg?label=NuGet)](https://www.nuget.org/packages/Jameak.RequestAuthorization.Core) |
+| Jameak.RequestAuthorization.Adapter.AspNetCore | [![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.AspNetCore.svg?label=NuGet)](https://www.nuget.org/packages/Jameak.RequestAuthorization.Adapter.AspNetCore) |
+| Jameak.RequestAuthorization.Adapter.Mediator | [![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.Mediator.svg?label=NuGet)](https://www.nuget.org/packages/Jameak.RequestAuthorization.Adapter.Mediator) |
+| Jameak.RequestAuthorization.Adapter.MediatR | [![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.MediatR.svg?label=NuGet)](https://www.nuget.org/packages/Jameak.RequestAuthorization.Adapter.MediatR) |
 
 Need to integrate with a different mediator-style pipeline library? See [this section](#writing-your-own-mediator-adapter) for details on how to write your own adapter.
 
