@@ -2,7 +2,7 @@
 using Jameak.RequestAuthorization.Core.Results;
 using Jameak.RequestAuthorization.MediatorNativeAotSample.Services;
 
-namespace Jameak.RequestAuthorization.MediatorNativeAotSample.Mediator;
+namespace Jameak.RequestAuthorization.MediatorNativeAotSample.Requirements;
 
 public class HasReadAccessToDocumentRequirementHandler
     : RequestAuthorizationHandlerBase<HasReadAccessToDocument>

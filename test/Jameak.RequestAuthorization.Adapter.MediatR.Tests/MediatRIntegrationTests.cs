@@ -122,8 +122,13 @@ public class MediatRIntegrationTests
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var requestObj = new SampleVoidRequest();
 
-        // Act & Assert
-        await mediator.Send(requestObj); // Should not throw auth error
+        // Act & Assert. Should not throw auth exception.
+        var exception = await Record.ExceptionAsync(async () =>
+        {
+            await mediator.Send(requestObj);
+        });
+
+        Assert.Null(exception);
     }
 
     [Theory]
@@ -265,6 +270,121 @@ public class MediatRIntegrationTests
             CancellationToken token)
         {
             return Task.FromResult<IRequestAuthorizationRequirement>(new AlwaysFailureRequirement());
+        }
+    }
+
+
+    [Fact]
+    public static async Task BuilderWithDerivedRequests()
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblyContaining<MediatRIntegrationTests>();
+            cfg.Lifetime = ServiceLifetime.Scoped;
+        });
+        serviceCollection.AddRequestAuthorizationCore(serviceLifetime: ServiceLifetime.Scoped)
+            //.AddRequirementBuilderType<GetDataRequestRequirementBuilder<GetDataResponse>, GetDataRequest>()
+            .AddRequirementBuilderTypeForDerivedRequestsFromAssembly(typeof(CustomerRequestRequirementBuilder<>), typeof(ICustomerRequest<>), typeof(MediatRIntegrationTests).Assembly)
+            .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
+            .AddMediatRPipelineAdapter();
+        var serviceProvider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
+        await using var scope = serviceProvider.CreateAsyncScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var requestObj = new GetCustomerDataRequest();
+
+        // Act & Assert. Should not throw auth exception.
+        var exception = await Record.ExceptionAsync(async () =>
+        {
+            await mediator.Send(requestObj);
+        });
+
+        Assert.Null(exception);
+    }
+
+    public interface ICustomerRequest<T> : IRequest<T>
+    {
+        public Guid CustomerId { get; }
+    }
+
+    public class GetCustomerDataRequest : ICustomerRequest<GetCustomerDataResponse>
+    {
+        public Guid CustomerId { get; }
+    }
+
+    public class GetCustomerDataResponse;
+
+    public class GetDataRequestHandler : IRequestHandler<GetCustomerDataRequest, GetCustomerDataResponse>
+    {
+        public Task<GetCustomerDataResponse> Handle(GetCustomerDataRequest request, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new GetCustomerDataResponse());
+        }
+    }
+
+    public class CustomerRequestRequirementBuilder<T> : IRequestAuthorizationRequirementBuilder<ICustomerRequest<T>>
+    {
+        public Task<IRequestAuthorizationRequirement> BuildRequirementAsync(
+            ICustomerRequest<T> request,
+            CancellationToken token)
+        {
+            return Task.FromResult<IRequestAuthorizationRequirement>(new AlwaysSuccessRequirement());
+        }
+    }
+
+    [Fact]
+    public static async Task BuilderWithDerivedVoidRequests()
+    {
+        // Arrange
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblyContaining<MediatRIntegrationTests>();
+            cfg.Lifetime = ServiceLifetime.Scoped;
+        });
+        serviceCollection.AddRequestAuthorizationCore(serviceLifetime: ServiceLifetime.Scoped)
+            //.AddRequirementBuilderType<GetDataVoidRequestRequirementBuilder, GetDataRequest>()
+            .AddRequirementBuilderTypeForDerivedRequestsFromAssembly(typeof(CustomerVoidRequestRequirementBuilder), typeof(ICustomerVoidRequest), typeof(MediatRIntegrationTests).Assembly)
+            .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
+            .AddMediatRPipelineAdapter();
+        var serviceProvider = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
+        await using var scope = serviceProvider.CreateAsyncScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var requestObj = new GetCustomerDataVoidRequest();
+
+        // Act & Assert. Should not throw auth exception.
+        var exception = await Record.ExceptionAsync(async () =>
+        {
+            await mediator.Send(requestObj);
+        });
+
+        Assert.Null(exception);
+    }
+
+    public interface ICustomerVoidRequest : IRequest
+    {
+        public Guid CustomerId { get; }
+    }
+
+    public class GetCustomerDataVoidRequest : ICustomerVoidRequest
+    {
+        public Guid CustomerId { get; }
+    }
+
+
+    public class GetCustomerDataVoidRequestHandler : IRequestHandler<GetCustomerDataVoidRequest>
+    {
+        public Task Handle(GetCustomerDataVoidRequest request, CancellationToken cancellationToken) => Task.CompletedTask;
+    }
+
+    public class CustomerVoidRequestRequirementBuilder : IRequestAuthorizationRequirementBuilder<ICustomerVoidRequest>
+    {
+        public Task<IRequestAuthorizationRequirement> BuildRequirementAsync(
+            ICustomerVoidRequest request,
+            CancellationToken token)
+        {
+            return Task.FromResult<IRequestAuthorizationRequirement>(new AlwaysSuccessRequirement());
         }
     }
 }

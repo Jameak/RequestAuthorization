@@ -49,7 +49,7 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
     }
 
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
-    public IHandlerRegistrationBuilder AddRequirementHandlerTypesFromAssembly(Assembly assembly)
+    public IHandlerRegistrationBuilder AddRequirementHandlerTypesFromAssembly(Assembly assembly, bool throwWhenNoValidTypesFound = true)
     {
         var handlerTuples = assembly.GetTypes()
             .Where(t =>
@@ -80,11 +80,17 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
             throw new InvalidHandlerRegistrationException($"Assembly contains invalid handler types. These handler types implement {nameof(RequestAuthorizationHandlerBase<>)} with the generic type {nameof(IRequestAuthorizationRequirement)}. The generic type must inherit from this interface-type instead.\n{string.Join('\n', invalidDeclarations.Select(e => e.handlerType.FullName))}");
         }
 
+        if (throwWhenNoValidTypesFound && handlerTuples.Count == 0)
+        {
+            throw new ArgumentException($"Assembly contains 0 non-abstract, non-interface, non-open types deriving from '{typeof(RequestAuthorizationHandlerBase<>)}<T>'", nameof(assembly));
+        }
+
         Services.AddSingleton(new AuthorizationHandlerRegistrar(handlerTuples));
         return this;
     }
 
     [SuppressMessage("Usage", "MA0015:Specify the parameter name in ArgumentException", Justification = "Argument exceptions related to generic params")]
+    [SuppressMessage("Usage", "S3928:Parameter names used into ArgumentException constructors should match an existing one", Justification = "Argument exceptions related to generic params")]
     public IHandlerRegistrationBuilder AddRequirementHandlerType<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler,
         TRequirement>()
@@ -107,9 +113,9 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type handlerType,
         Type requirementType)
     {
-        if (requirementType == typeof(IRequestAuthorizationRequirement))
+        if (requirementType == typeof(IRequestAuthorizationRequirement) || !requirementType.IsAssignableTo(typeof(IRequestAuthorizationRequirement)))
         {
-            throw new ArgumentException($"Type-argument '{nameof(requirementType)}' must inherit from {nameof(IRequestAuthorizationRequirement)}.", nameof(requirementType));
+            throw new ArgumentException($"Type-argument '{nameof(requirementType)}' type '{requirementType}' must inherit from {nameof(IRequestAuthorizationRequirement)}.", nameof(requirementType));
         }
 
         var handlerHandlesRequirement = GetBaseTypes(handlerType)
@@ -129,8 +135,9 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
     }
 
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes() and type.GetInterfaces()")]
-    public IHandlerRegistrationBuilder AddRequirementBuilderTypesFromAssembly(Assembly assembly)
+    public IHandlerRegistrationBuilder AddRequirementBuilderTypesFromAssembly(Assembly assembly, bool throwWhenNoValidTypesFound = true)
     {
+        var foundAny = false;
         foreach (var type in assembly.GetTypes().Where(t =>
                 !t.IsAbstract &&
                 !t.IsInterface &&
@@ -145,7 +152,13 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
             foreach (var serviceType in implementedBuilderInterfaces)
             {
                 RegisterWithLifetime(serviceType, type);
+                foundAny = true;
             }
+        }
+
+        if (throwWhenNoValidTypesFound && !foundAny)
+        {
+            throw new ArgumentException($"Assembly contains 0 non-abstract, non-interface, non-open types deriving from '{s_builderInterfaceType}'", nameof(assembly));
         }
 
         return this;
@@ -167,24 +180,86 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
         Type requestType)
     {
         var builderHandlesRequestType = builderType.GetInterfaces()
-                .SingleOrDefault(i =>
-                    i.IsGenericType &&
-                    i.GetGenericTypeDefinition() == s_builderInterfaceType &&
-                    i.GetGenericArguments()[0] == requestType);
+            .Where(i =>
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() == s_builderInterfaceType &&
+                i.GetGenericArguments()[0].IsAssignableFrom(requestType))
+            .ToList();
 
-        if (builderHandlesRequestType == null)
+        if (builderHandlesRequestType.Count == 0)
         {
-            throw new ArgumentException($"Type-argument '{nameof(builderType)}' must implement {nameof(IRequestAuthorizationRequirementBuilder<>)}<T> and T must match the type-argument '{nameof(requestType)}'.", nameof(builderType));
+            throw new ArgumentException($"Type-argument '{nameof(builderType)}' type '{builderType}' must implement {nameof(IRequestAuthorizationRequirementBuilder<>)}<T> where T is assignable from the type-argument '{nameof(requestType)}' type '{requestType}'.", nameof(builderType));
         }
 
+        // Builder may handle request type > 1. That is ok, we simply register with exactly the request type the user specified.
         ThrowIfAbstractOrInterfaceOrOpenGeneric(builderType, nameof(builderType));
         RegisterWithLifetime(typeof(IRequestAuthorizationRequirementBuilder<>).MakeGenericType(requestType), builderType);
         return this;
     }
 
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
-    public IHandlerRegistrationBuilder AddGlobalRequirementBuilderTypesFromAssembly(Assembly assembly)
+    [RequiresDynamicCode("Calls System.Type.MakeGenericType(params Type[])")]
+    public IHandlerRegistrationBuilder AddRequirementBuilderTypeForDerivedRequestsFromAssembly(
+        Type builderType,
+        Type requestBaseType,
+        Assembly assembly,
+        bool throwWhenNoValidTypesFound = true)
     {
+        if (!builderType.IsGenericTypeDefinition && requestBaseType.IsGenericTypeDefinition)
+        {
+            throw new ArgumentException($"Closed builder '{builderType}' requires a closed request base type.", nameof(requestBaseType));
+        }
+
+        if (builderType.IsGenericTypeDefinition && !requestBaseType.IsGenericTypeDefinition)
+        {
+            throw new ArgumentException($"Open generic builder '{builderType}' requires an open generic request base type.", nameof(requestBaseType));
+        }
+
+        if (builderType.IsAbstract || builderType.IsInterface)
+        {
+            throw new ArgumentException($"Builder type '{builderType}' must be a concrete class.", nameof(builderType));
+        }
+
+        var builderInterfaces = builderType
+            .GetInterfaces()
+            .Where(i =>
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() == s_builderInterfaceType)
+            .ToList();
+
+        if (builderInterfaces.Count == 0)
+        {
+            throw new ArgumentException($"Builder type '{builderType}' does not implement {nameof(IRequestAuthorizationRequirementBuilder<>)}<T>.", nameof(builderType));
+        }
+
+        var requestTypes = assembly.GetTypes()
+            .Where(t =>
+                !t.IsAbstract &&
+                !t.IsInterface &&
+                !t.IsGenericTypeDefinition &&
+                IsAssignableToRequestBaseType(t, requestBaseType))
+            .ToList();
+
+        if (throwWhenNoValidTypesFound && requestTypes.Count == 0)
+        {
+            throw new ArgumentException($"Assembly contains 0 non-abstract, non-interface, non-open types deriving from request-type '{requestBaseType}'", nameof(requestBaseType));
+        }
+
+        foreach (var requestType in requestTypes)
+        {
+            var concreteBuilderType = CloseBuilderTypeIfNeeded(builderType, requestBaseType, requestType);
+
+            ValidateBuilderForRequest(concreteBuilderType, requestType);
+            AddRequirementBuilderType(concreteBuilderType, requestType);
+        }
+
+        return this;
+    }
+
+    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
+    public IHandlerRegistrationBuilder AddGlobalRequirementBuilderTypesFromAssembly(Assembly assembly, bool throwWhenNoValidTypesFound = true)
+    {
+        var foundAny = false;
         foreach (var type in assembly.GetTypes()
             .Where(t => !t.IsAbstract &&
                 !t.IsInterface &&
@@ -192,6 +267,12 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
                 s_globalBuilderInterfaceType.IsAssignableFrom(t)))
         {
             RegisterWithLifetime(s_globalBuilderInterfaceType, type);
+            foundAny = true;
+        }
+
+        if (throwWhenNoValidTypesFound && !foundAny)
+        {
+            throw new ArgumentException($"Assembly contains 0 non-abstract, non-interface, non-open types deriving from '{s_globalBuilderInterfaceType}'", nameof(assembly));
         }
 
         return this;
@@ -269,6 +350,86 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
         {
             yield return baseType;
             baseType = baseType.BaseType;
+        }
+    }
+
+    private static bool IsAssignableToRequestBaseType(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type candidate,
+        Type requestBaseType)
+    {
+        if (requestBaseType.IsGenericTypeDefinition)
+        {
+            return candidate
+                .GetInterfaces()
+                .Concat(GetBaseTypes(candidate))
+                .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == requestBaseType);
+        }
+
+        return requestBaseType.IsAssignableFrom(candidate);
+    }
+
+    [RequiresDynamicCode("Calls System.Type.MakeGenericType(params Type[])")]
+    [RequiresUnreferencedCode("Calls System.Type.MakeGenericType(params Type[])")]
+    private static Type CloseBuilderTypeIfNeeded(
+        Type builderType,
+        Type requestBaseType,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type concreteRequestType)
+    {
+        if (!builderType.IsGenericTypeDefinition)
+        {
+            return builderType;
+        }
+
+        var matchingDerivedTypes = concreteRequestType
+            .GetInterfaces()
+            .Concat(GetBaseTypes(concreteRequestType))
+            .Where(i =>
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() == requestBaseType)
+            .ToList();
+
+        if (matchingDerivedTypes.Count == 0)
+        {
+            throw new AssemblyScanningRegistrationException($"Could not find a closed generic implementation of '{requestBaseType}' on '{concreteRequestType}'.");
+        }
+
+        if (matchingDerivedTypes.Count > 1)
+        {
+            throw new AssemblyScanningRegistrationException($"Found multiple closed generic implementations of '{requestBaseType}' on '{concreteRequestType}'. This is not supported.");
+        }
+
+        var genericArgs = matchingDerivedTypes.Single().GetGenericArguments();
+
+        try
+        {
+            return builderType.MakeGenericType(genericArgs);
+        }
+        catch (Exception ex)
+        {
+            throw new AssemblyScanningRegistrationException($"Failed to close the open builder type '{builderType}' with generic arguments from '{concreteRequestType}' found via '{requestBaseType}'. All types deriving from '{requestBaseType}' must be valid for the given builder type.", ex);
+        }
+    }
+
+    private static void ValidateBuilderForRequest(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type concreteBuilderType,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type requestType)
+    {
+        var concreteBuilderInterfaces = concreteBuilderType
+            .GetInterfaces()
+            .Where(i =>
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() == s_builderInterfaceType)
+            .ToList();
+
+        var matchesRequest = concreteBuilderInterfaces.Exists(i =>
+        {
+            var builderRequestType = i.GetGenericArguments()[0];
+            return builderRequestType.IsAssignableFrom(requestType);
+        });
+
+        if (!matchesRequest)
+        {
+            throw new AssemblyScanningRegistrationException($"Concrete builder type '{concreteBuilderType}' is not assignable from {nameof(IRequestAuthorizationRequirementBuilder<>)}<{requestType.FullName ?? requestType.Name}>.");
         }
     }
 }

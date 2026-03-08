@@ -1,0 +1,89 @@
+﻿[
+  {
+    Lifetime: Scoped,
+    ServiceType: IAuthorizationPipelineStep<TRequest, TResponse>,
+    ImplementationType: AuthorizationPipelineStep<TRequest, TResponse>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IAuthorizationStreamPipelineStep<TRequest, TResponse>,
+    ImplementationType: AuthorizationStreamPipelineStep<TRequest, TResponse>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IGlobalRequestAuthorizationRequirementBuilder,
+    ImplementationType: RequestAuthorizationCheckerTests.AnotherGlobalBuilderProducingSuccessRequirement
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IGlobalRequestAuthorizationRequirementBuilder,
+    ImplementationType: GlobalBuilderInheritingFromUserProvidedAbstract
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IGlobalRequestAuthorizationRequirementBuilder,
+    ImplementationType: GlobalBuilderInheritingFromUserProvidedGeneric
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IGlobalRequestAuthorizationRequirementBuilder,
+    ImplementationType: GlobalBuilderInheritingFromUserProvidedInterface
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IGlobalRequestAuthorizationRequirementBuilder,
+    ImplementationType: GlobalRequirementBuilderProducingFailureRequirement
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IGlobalRequestAuthorizationRequirementBuilder,
+    ImplementationType: GlobalRequirementBuilderProducingSuccessRequirement
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IGlobalRequestAuthorizationRequirementBuilder,
+    ImplementationType: GlobalRequirementBuilderThatAlwaysCrashes
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationChecker<TRequest>,
+    ImplementationType: RequestAuthorizationChecker<TRequest>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationExecutor,
+    ImplementationType: RequestAuthorizationExecutor
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AllRequirementHandler,
+    ImplementationType: AllRequirementHandler
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AnyRequirementHandler,
+    ImplementationType: AnyRequirementHandler
+  },
+  {
+    ServiceType: IAuthorizedResultHandler,
+    ImplementationType: DefaultAuthorizedResultHandler
+  },
+  {
+    ServiceType: IUnauthorizedResultHandler,
+    ImplementationType: DefaultUnauthorizedResultHandler
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistrar
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistrar
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistry,
+    ImplementationType: AuthorizationHandlerRegistry
+  },
+  {
+    Lifetime: Transient,
+    ServiceType: RequestAuthorizationOptions
+  }
+]

@@ -1,0 +1,97 @@
+﻿[
+  {
+    Lifetime: Scoped,
+    ServiceType: IAuthorizationPipelineStep<TRequest, TResponse>,
+    ImplementationType: AuthorizationPipelineStep<TRequest, TResponse>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IAuthorizationStreamPipelineStep<TRequest, TResponse>,
+    ImplementationType: AuthorizationStreamPipelineStep<TRequest, TResponse>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationChecker<TRequest>,
+    ImplementationType: RequestAuthorizationChecker<TRequest>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationExecutor,
+    ImplementationType: RequestAuthorizationExecutor
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AllRequirementHandler,
+    ImplementationType: AllRequirementHandler
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AnyRequirementHandler,
+    ImplementationType: AnyRequirementHandler
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: RequestAuthorizationCheckerTests.AnotherHandlerAlsoProcessingAlwaysSuccessRequirements,
+    ImplementationType: RequestAuthorizationCheckerTests.AnotherHandlerAlsoProcessingAlwaysSuccessRequirements
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AlwaysFailureRequirementHandler,
+    ImplementationType: AlwaysFailureRequirementHandler
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AlwaysSuccessRequirementHandler,
+    ImplementationType: AlwaysSuccessRequirementHandler
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: CircularRequirementHandler,
+    ImplementationType: CircularRequirementHandler
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: CrashingRequirementHandler,
+    ImplementationType: CrashingRequirementHandler
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: HandlerTypeInheritingFromUserProvidedAbstract,
+    ImplementationType: HandlerTypeInheritingFromUserProvidedAbstract
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: HandlerTypeInheritingFromUserProvidedGenericAbstract,
+    ImplementationType: HandlerTypeInheritingFromUserProvidedGenericAbstract
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: RequirementHandlerThatCrashesOnInstantiation,
+    ImplementationType: RequirementHandlerThatCrashesOnInstantiation
+  },
+  {
+    ServiceType: IAuthorizedResultHandler,
+    ImplementationType: DefaultAuthorizedResultHandler
+  },
+  {
+    ServiceType: IUnauthorizedResultHandler,
+    ImplementationType: DefaultUnauthorizedResultHandler
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistrar
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistrar
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistrar
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistry,
+    ImplementationType: AuthorizationHandlerRegistry
+  },
+  {
+    Lifetime: Transient,
+    ServiceType: RequestAuthorizationOptions
+  }
+]

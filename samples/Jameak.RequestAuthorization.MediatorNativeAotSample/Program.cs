@@ -1,8 +1,9 @@
-using System.Text.Json.Serialization;
 using Jameak.RequestAuthorization.Adapter.Mediator;
 using Jameak.RequestAuthorization.Core.DependencyInjection;
 using Jameak.RequestAuthorization.Core.Exceptions;
+using Jameak.RequestAuthorization.MediatorNativeAotSample;
 using Jameak.RequestAuthorization.MediatorNativeAotSample.Mediator;
+using Jameak.RequestAuthorization.MediatorNativeAotSample.Requirements;
 using Jameak.RequestAuthorization.MediatorNativeAotSample.Services;
 using Mediator;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -52,10 +53,4 @@ documentsApi.MapGet("/", async Task<Results<Ok<GetDocumentResponse>, Unauthorize
     }
 });
 
-app.Run();
-
-[JsonSerializable(typeof(GetDocumentResponse))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
-{
-
-}
+await app.RunAsync();

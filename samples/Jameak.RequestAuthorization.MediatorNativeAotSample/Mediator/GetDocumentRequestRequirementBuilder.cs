@@ -1,4 +1,5 @@
 ﻿using Jameak.RequestAuthorization.Core.Abstractions;
+using Jameak.RequestAuthorization.MediatorNativeAotSample.Requirements;
 using Jameak.RequestAuthorization.MediatorNativeAotSample.Services;
 
 namespace Jameak.RequestAuthorization.MediatorNativeAotSample.Mediator;

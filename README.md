@@ -19,7 +19,7 @@ And it integrates with any mediator-style pipeline and is NativeAOT compatible.
 | Jameak.RequestAuthorization.Adapter.Mediator | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.Mediator.svg?label=NuGet) |
 | Jameak.RequestAuthorization.Adapter.MediatR | ![NuGet](https://img.shields.io/nuget/v/Jameak.RequestAuthorization.Adapter.MediatR.svg?label=NuGet) |
 
-Need to integrate with a different mediator-style pipeline library? See [this section](#writing-your-own-mediator-adapter) for details on how.
+Need to integrate with a different mediator-style pipeline library? See [this section](#writing-your-own-mediator-adapter) for details on how to write your own adapter.
 
 <details>
 <summary><strong>Click to see dependencies</strong></summary>
@@ -235,6 +235,72 @@ To make the library use your custom handlers, add them like so during dependency
 builder.Services.AddRequestAuthorizationCore()
     .WithAuthorizedResultHandler<CustomizedAuthorizedHandler>()
     .WithUnauthorizedResultHandler<CustomizedUnauthorizedHandler>()
+```
+
+## Derived Request Authorization
+Many applications have groups of requests that share common authorization rules. For example, multiple requests may operate on a customer, tenant, or organization, and therefore require the same authorization checks.
+
+Instead of registering a requirement builder for every request type individually, you can register a single builder for a base request type and automatically apply it to all derived requests. This means that authorization logic for a group of related requests can live in one builder, and new request types will automatically receive the relevant authorization logic as long as they implement the base request interface.
+
+This registration is performed using `AddRequirementBuilderTypeForDerivedRequestsFromAssembly(...)`, which scans an assembly for request types that derive from the specified base request type and automatically registers the appropriate authorization builders.
+
+### Customer example
+Suppose multiple requests operate on a customer and expose a `CustomerId`. You can define a base request interface:
+```csharp
+public interface ICustomerRequest<T> : IRequest<T>
+{
+    Guid CustomerId { get; }
+}
+```
+
+A request can then implement this interface:
+```csharp
+public class GetCustomerDataRequest : ICustomerRequest<GetCustomerDataResponse>
+{
+    public Guid CustomerId { get; }
+    // Other fields necessary for this request
+}
+
+public class GetCustomerDataResponse
+{
+    // Relevant fields for the response
+}
+```
+
+Instead of creating a requirement builder per request, you can define a single generic builder for the base request type:
+```csharp
+public class CustomerRequestRequirementBuilder<T>
+    : IRequestAuthorizationRequirementBuilder<ICustomerRequest<T>>
+{
+    public Task<IRequestAuthorizationRequirement> BuildRequirementAsync(
+        ICustomerRequest<T> request,
+        CancellationToken token)
+    {
+        IRequestAuthorizationRequirement requirement = // Your customer requirement
+        return Task.FromResult(requirement);
+    }
+}
+```
+
+Register the builder for all derived requests:
+```csharp
+services.AddRequestAuthorizationCore()
+    .AddRequirementBuilderTypeForDerivedRequestsFromAssembly(
+        typeof(CustomerRequestRequirementBuilder<>),
+        typeof(ICustomerRequest<>),
+        typeof(Program).Assembly);
+```
+
+The library will scan the assembly for request types deriving from `ICustomerRequest<>`, close the generic builder for each request, and register the corresponding closed builder type automatically.
+
+> [!NOTE]
+> This feature requires assembly scanning and closes generic types at service registration time. Because of this it is not supported in NativeAOT scenarios.
+>
+> To get the same benefits of a single requirement builder type without this scanning API, you need to register each builder manually as shown below:
+```csharp
+services.AddRequestAuthorizationCore()
+    .AddRequirementBuilderType<CustomerRequestRequirementBuilder<GetCustomerDataResponse>, GetCustomerDataRequest>()
+    .AddRequirementBuilderType<CustomerRequestRequirementBuilder<SomeOtherCustomerResponse>, SomeOtherCustomerRequest>()
 ```
 
 ## Adapter libraries

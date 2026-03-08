@@ -62,6 +62,53 @@ public interface IHandlerRegistrationBuilder
         Type requestType);
 
     /// <summary>
+    /// Scans the specified assembly for concrete request types that
+    /// derive from <paramref name="requestBaseType"/>, and registers the specified
+    /// <paramref name="builderType"/> as the corresponding
+    /// <see cref="IRequestAuthorizationRequirementBuilder{TRequest}"/>
+    /// for each request type discovered in the assembly.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This method enables registering a single requirement builder for an entire
+    /// request hierarchy. For example, a builder targeting ICustomerRequest&lt;TResponse&gt;
+    /// can be automatically applied to all concrete request types implementing that interface.
+    /// </para>
+    /// <para>
+    /// The <paramref name="builderType"/> may be:
+    /// <list type="bullet">
+    /// <item>
+    /// An open generic type (e.g. CustomerRequestBuilder&lt;&gt;), in which case
+    /// it will be closed using the generic arguments inferred from each discovered request.
+    /// </item>
+    /// <item>
+    /// A closed concrete type, in which case the request must also be a closed type.
+    /// </item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// Only non-abstract, non-interface, non-open derived request types from the assembly are considered.
+    /// </para>
+    /// </remarks>
+    /// <param name="builderType">The builder type to register. Must implement
+    /// <see cref="IRequestAuthorizationRequirementBuilder{TRequest}"/>. May be an open generic type or a closed type.
+    /// </param>
+    /// <param name="requestBaseType">
+    /// The base request type that discovered request types must derive from.
+    /// </param>
+    /// <param name="assembly">The assembly to scan.</param>
+    /// <param name="throwWhenNoValidTypesFound">Controls whether an exception should be thrown when
+    /// no valid types to register are found in the assembly. Defaults to true.</param>
+    /// <returns>The builder for chaining further calls.</returns>
+    [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
+    [RequiresDynamicCode("Calls System.Type.MakeGenericType(params Type[])")]
+    public IHandlerRegistrationBuilder AddRequirementBuilderTypeForDerivedRequestsFromAssembly(
+        Type builderType,
+        Type requestBaseType,
+        Assembly assembly,
+        bool throwWhenNoValidTypesFound = true);
+
+    /// <summary>
     /// Registers a global requirement builder type.
     /// </summary>
     /// <typeparam name="TGlobalHandler">The global requirement builder type.</typeparam>
@@ -80,29 +127,47 @@ public interface IHandlerRegistrationBuilder
 
     /// <summary>
     /// Registers requirement handler types discovered in the specified assembly.
+    /// Only non-abstract, non-interface, non-open types deriving from
+    /// <see cref="RequestAuthorizationHandlerBase{Object}"/> in the assembly are considered.
     /// </summary>
     /// <param name="assembly">The assembly to scan.</param>
+    /// <param name="throwWhenNoValidTypesFound">Controls whether an exception should be thrown when
+    /// no valid types to register are found in the assembly. Defaults to true.</param>
     /// <returns>The builder for chaining further calls.</returns>
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
-    IHandlerRegistrationBuilder AddRequirementHandlerTypesFromAssembly(Assembly assembly);
+    IHandlerRegistrationBuilder AddRequirementHandlerTypesFromAssembly(
+        Assembly assembly,
+        bool throwWhenNoValidTypesFound = true);
 
     /// <summary>
     /// Registers requirement builder types discovered in the specified assembly.
+    /// Only non-abstract, non-interface, non-open types deriving from
+    /// <see cref="IRequestAuthorizationRequirementBuilder{Object}"/> in the assembly are considered.
     /// </summary>
     /// <param name="assembly">The assembly to scan.</param>
+    /// <param name="throwWhenNoValidTypesFound">Controls whether an exception should be thrown when
+    /// no valid types to register are found in the assembly. Defaults to true.</param>
     /// <returns>The builder for chaining further calls.</returns>
 
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes() and type.GetInterfaces()")]
-    IHandlerRegistrationBuilder AddRequirementBuilderTypesFromAssembly(Assembly assembly);
+    IHandlerRegistrationBuilder AddRequirementBuilderTypesFromAssembly(
+        Assembly assembly,
+        bool throwWhenNoValidTypesFound = true);
 
     /// <summary>
     /// Registers global requirement builder types discovered in the specified assembly.
+    /// Only non-abstract, non-interface, non-open types deriving from
+    /// <see cref="IGlobalRequestAuthorizationRequirementBuilder"/> in the assembly are considered.
     /// </summary>
     /// <param name="assembly">The assembly to scan.</param>
+    /// <param name="throwWhenNoValidTypesFound">Controls whether an exception should be thrown when
+    /// no valid types to register are found in the assembly. Defaults to true.</param>
     /// <returns>The builder for chaining further calls.</returns>
 
     [RequiresUnreferencedCode("Calls System.Reflection.Assembly.GetTypes()")]
-    IHandlerRegistrationBuilder AddGlobalRequirementBuilderTypesFromAssembly(Assembly assembly);
+    IHandlerRegistrationBuilder AddGlobalRequirementBuilderTypesFromAssembly(
+        Assembly assembly,
+        bool throwWhenNoValidTypesFound = true);
 
     /// <summary>
     /// Registers a custom global unauthorized result handler.

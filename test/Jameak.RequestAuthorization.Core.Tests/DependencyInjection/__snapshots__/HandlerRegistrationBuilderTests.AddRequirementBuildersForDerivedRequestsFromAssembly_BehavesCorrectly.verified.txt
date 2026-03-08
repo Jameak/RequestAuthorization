@@ -1,0 +1,94 @@
+﻿[
+  {
+    Lifetime: Scoped,
+    ServiceType: IAuthorizationPipelineStep<TRequest, TResponse>,
+    ImplementationType: AuthorizationPipelineStep<TRequest, TResponse>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IAuthorizationStreamPipelineStep<TRequest, TResponse>,
+    ImplementationType: AuthorizationStreamPipelineStep<TRequest, TResponse>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<ClosedRequestFromBaseRequest1>,
+    ImplementationType: NotBaseRequestBuilder<UserDataRequest1>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<ClosedRequestFromBaseRequest1>,
+    ImplementationType: OpenBaseRequestBuilder<UserDataRequest1>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<DerivedRequest1>,
+    ImplementationType: NotBaseRequestBuilder<UserDataRequest1>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<DerivedRequest1>,
+    ImplementationType: OpenBaseRequestBuilder<UserDataRequest1>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<DerivedRequest2>,
+    ImplementationType: NotBaseRequestBuilder<UserDataRequest2>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<DerivedRequest2>,
+    ImplementationType: OpenBaseRequestBuilder<UserDataRequest2>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<DerivedRequestFromBaseRequest4>,
+    ImplementationType: NotBaseRequestBuilder<UserDataRequest1>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<NonGenericDerivedRequest>,
+    ImplementationType: ClosedNonGenericBaseRequestBuilder
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationChecker<TRequest>,
+    ImplementationType: RequestAuthorizationChecker<TRequest>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationExecutor,
+    ImplementationType: RequestAuthorizationExecutor
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AllRequirementHandler,
+    ImplementationType: AllRequirementHandler
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AnyRequirementHandler,
+    ImplementationType: AnyRequirementHandler
+  },
+  {
+    ServiceType: IAuthorizedResultHandler,
+    ImplementationType: DefaultAuthorizedResultHandler
+  },
+  {
+    ServiceType: IUnauthorizedResultHandler,
+    ImplementationType: DefaultUnauthorizedResultHandler
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistrar
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistrar
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistry,
+    ImplementationType: AuthorizationHandlerRegistry
+  },
+  {
+    Lifetime: Transient,
+    ServiceType: RequestAuthorizationOptions
+  }
+]

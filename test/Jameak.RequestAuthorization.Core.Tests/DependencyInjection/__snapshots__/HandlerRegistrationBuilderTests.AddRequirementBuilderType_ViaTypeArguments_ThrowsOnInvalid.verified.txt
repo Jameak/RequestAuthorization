@@ -1,0 +1,104 @@
+﻿[
+  {
+    Lifetime: Scoped,
+    ServiceType: IAuthorizationPipelineStep<TRequest, TResponse>,
+    ImplementationType: AuthorizationPipelineStep<TRequest, TResponse>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IAuthorizationStreamPipelineStep<TRequest, TResponse>,
+    ImplementationType: AuthorizationStreamPipelineStep<TRequest, TResponse>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestMultiBaseRequest>,
+    ImplementationType: BuilderHandlingMultipleAssignableRequests
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestRequest>,
+    ImplementationType: AlwaysSuccessRequirementBuilder
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestRequest>,
+    ImplementationType: AnotherGenericRequestBuilder<object>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestRequest>,
+    ImplementationType: BuilderImplementingMultipleInterfaces
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestRequest>,
+    ImplementationType: BuilderInheritingFromUserProvidedAbstract
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestRequest>,
+    ImplementationType: BuilderInheritingFromUserProvidedGenericAbstract
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestRequest>,
+    ImplementationType: BuilderInheritingFromUserProvidedGenericInterface
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestRequest>,
+    ImplementationType: BuilderInheritingFromUserProvidedInterface
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestRequest>,
+    ImplementationType: GenericRequestBuilder<TestRequest>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationRequirementBuilder<TestRequest2>,
+    ImplementationType: BuilderImplementingMultipleInterfaces
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationChecker<TRequest>,
+    ImplementationType: RequestAuthorizationChecker<TRequest>
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: IRequestAuthorizationExecutor,
+    ImplementationType: RequestAuthorizationExecutor
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AllRequirementHandler,
+    ImplementationType: AllRequirementHandler
+  },
+  {
+    Lifetime: Scoped,
+    ServiceType: AnyRequirementHandler,
+    ImplementationType: AnyRequirementHandler
+  },
+  {
+    ServiceType: IAuthorizedResultHandler,
+    ImplementationType: DefaultAuthorizedResultHandler
+  },
+  {
+    ServiceType: IUnauthorizedResultHandler,
+    ImplementationType: DefaultUnauthorizedResultHandler
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistrar
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistrar
+  },
+  {
+    ServiceType: AuthorizationHandlerRegistry,
+    ImplementationType: AuthorizationHandlerRegistry
+  },
+  {
+    Lifetime: Transient,
+    ServiceType: RequestAuthorizationOptions
+  }
+]

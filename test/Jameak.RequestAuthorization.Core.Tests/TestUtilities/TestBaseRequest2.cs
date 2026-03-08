@@ -1,3 +1,3 @@
 ﻿namespace Jameak.RequestAuthorization.Core.Tests.TestUtilities;
 
-public class TestRequest : TestBaseRequest;
+public interface TestBaseRequest2;

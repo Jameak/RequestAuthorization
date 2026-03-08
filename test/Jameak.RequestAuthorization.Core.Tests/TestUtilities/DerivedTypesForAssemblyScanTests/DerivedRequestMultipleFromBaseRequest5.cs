@@ -1,0 +1,3 @@
+﻿namespace Jameak.RequestAuthorization.Core.Tests.TestUtilities.DerivedTypesForAssemblyScanTests;
+
+internal class DerivedRequestMultipleFromBaseRequest5 : IBaseRequest5<UserDataRequest1>, IBaseRequest5<UserDataRequest2>;
