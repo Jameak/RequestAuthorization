@@ -1,0 +1,9 @@
+﻿#nullable enable
+Jameak.RequestAuthorization.Adapter.MediatR.HandlerRegistrationBuilderExtensions
+Jameak.RequestAuthorization.Adapter.MediatR.RequestAuthorizationPipelineBehavior<TRequest, TResponse>
+Jameak.RequestAuthorization.Adapter.MediatR.RequestAuthorizationPipelineBehavior<TRequest, TResponse>.Handle(TRequest request, MediatR.RequestHandlerDelegate<TResponse>! next, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResponse>!
+Jameak.RequestAuthorization.Adapter.MediatR.RequestAuthorizationPipelineBehavior<TRequest, TResponse>.RequestAuthorizationPipelineBehavior(Jameak.RequestAuthorization.Core.Abstractions.IAuthorizationPipelineStep<TRequest, TResponse>! corePipelineStep) -> void
+Jameak.RequestAuthorization.Adapter.MediatR.RequestAuthorizationStreamPipelineBehavior<TRequest, TResponse>
+Jameak.RequestAuthorization.Adapter.MediatR.RequestAuthorizationStreamPipelineBehavior<TRequest, TResponse>.Handle(TRequest request, MediatR.StreamHandlerDelegate<TResponse>! next, System.Threading.CancellationToken cancellationToken) -> System.Collections.Generic.IAsyncEnumerable<TResponse>!
+Jameak.RequestAuthorization.Adapter.MediatR.RequestAuthorizationStreamPipelineBehavior<TRequest, TResponse>.RequestAuthorizationStreamPipelineBehavior(Jameak.RequestAuthorization.Core.Abstractions.IAuthorizationStreamPipelineStep<TRequest, TResponse>! corePipelineStep) -> void
+static Jameak.RequestAuthorization.Adapter.MediatR.HandlerRegistrationBuilderExtensions.AddMediatRPipelineAdapter(this Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder! builder) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!

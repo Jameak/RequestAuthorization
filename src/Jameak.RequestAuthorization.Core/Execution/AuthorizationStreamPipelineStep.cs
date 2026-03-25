@@ -8,15 +8,18 @@ internal sealed class AuthorizationStreamPipelineStep<TRequest, TResponse> : IAu
     private readonly IRequestAuthorizationChecker<TRequest> _requestAuthorizationChecker;
     private readonly IAuthorizedResultHandler _authorizedResultHandler;
     private readonly IUnauthorizedResultHandler _unauthorizedResultHandler;
+    private readonly IRequestAuthorizationResultAccessor _authorizationResultAccessor;
 
     public AuthorizationStreamPipelineStep(
         IRequestAuthorizationChecker<TRequest> requestAuthorizationChecker,
         IAuthorizedResultHandler authorizedResultHandler,
-        IUnauthorizedResultHandler unauthorizedResultHandler)
+        IUnauthorizedResultHandler unauthorizedResultHandler,
+        IRequestAuthorizationResultAccessor authorizationResultAccessor)
     {
         _requestAuthorizationChecker = requestAuthorizationChecker;
         _authorizedResultHandler = authorizedResultHandler;
         _unauthorizedResultHandler = unauthorizedResultHandler;
+        _authorizationResultAccessor = authorizationResultAccessor;
     }
 
     public async IAsyncEnumerable<TResponse> Handle(
@@ -25,6 +28,7 @@ internal sealed class AuthorizationStreamPipelineStep<TRequest, TResponse> : IAu
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var authResult = await _requestAuthorizationChecker.CheckAuthorization(message, cancellationToken);
+        _authorizationResultAccessor.AuthorizationResult = authResult;
 
         if (!authResult.IsAuthorized)
         {

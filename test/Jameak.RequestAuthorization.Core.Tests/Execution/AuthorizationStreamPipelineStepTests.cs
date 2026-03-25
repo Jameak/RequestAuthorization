@@ -20,6 +20,7 @@ public class AuthorizationStreamPipelineStepTests
         var authedResultHandlerMock = new Mock<IAuthorizedResultHandler>(MockBehavior.Strict);
         var unauthedResultHandlerMock = new Mock<IUnauthorizedResultHandler>(MockBehavior.Strict);
         var checkerMock = new Mock<IRequestAuthorizationChecker<object>>(MockBehavior.Strict);
+        var accessorMock = new Mock<IRequestAuthorizationResultAccessor>(MockBehavior.Strict);
         static IAsyncEnumerable<object> next(CancellationToken token)
         {
             Assert.Fail("Should not be called");
@@ -32,12 +33,15 @@ public class AuthorizationStreamPipelineStepTests
         checkerMock
             .Setup(e => e.CheckAuthorization(requestObj, cancelToken))
             .ReturnsAsync(authResult);
+        accessorMock
+            .SetupSet(e => e.AuthorizationResult = It.IsAny<RequestAuthorizationResult>());
 
         // Act
         var sut = new AuthorizationStreamPipelineStep<object, object>(
             checkerMock.Object,
             authedResultHandlerMock.Object,
-            unauthedResultHandlerMock.Object);
+            unauthedResultHandlerMock.Object,
+            accessorMock.Object);
 
         var result = await sut.Handle(requestObj, next, cancelToken).ToListAsync();
 
@@ -47,6 +51,7 @@ public class AuthorizationStreamPipelineStepTests
         unauthedResultHandlerMock.Verify(e => e.OnUnauthorizedStream<object, object>(requestObj, authResult, cancelToken), Times.Once);
         authedResultHandlerMock.Verify(e => e.OnAuthorized(requestObj, authResult, cancelToken), Times.Never);
         checkerMock.Verify(e => e.CheckAuthorization(requestObj, cancelToken), Times.Once);
+        accessorMock.VerifySet(e => e.AuthorizationResult = It.IsAny<RequestAuthorizationResult>(), Times.Once);
     }
 
     [Fact]
@@ -61,6 +66,7 @@ public class AuthorizationStreamPipelineStepTests
         var authedResultHandlerMock = new Mock<IAuthorizedResultHandler>(MockBehavior.Strict);
         var unauthedResultHandlerMock = new Mock<IUnauthorizedResultHandler>(MockBehavior.Strict);
         var checkerMock = new Mock<IRequestAuthorizationChecker<object>>(MockBehavior.Strict);
+        var accessorMock = new Mock<IRequestAuthorizationResultAccessor>(MockBehavior.Strict);
         async IAsyncEnumerable<object> next([EnumeratorCancellation] CancellationToken token)
         {
             yield return expectedResponseObjOne;
@@ -72,12 +78,15 @@ public class AuthorizationStreamPipelineStepTests
         checkerMock
             .Setup(e => e.CheckAuthorization(requestObj, cancelToken))
             .ReturnsAsync(authResult);
+        accessorMock
+            .SetupSet(e => e.AuthorizationResult = It.IsAny<RequestAuthorizationResult>());
 
         // Act
         var sut = new AuthorizationStreamPipelineStep<object, object>(
             checkerMock.Object,
             authedResultHandlerMock.Object,
-            unauthedResultHandlerMock.Object);
+            unauthedResultHandlerMock.Object,
+            accessorMock.Object);
 
         var result = await sut.Handle(requestObj, next, cancelToken).ToListAsync();
 
@@ -88,5 +97,6 @@ public class AuthorizationStreamPipelineStepTests
         unauthedResultHandlerMock.Verify(e => e.OnUnauthorizedStream<object, object>(requestObj, authResult, cancelToken), Times.Never);
         authedResultHandlerMock.Verify(e => e.OnAuthorized(requestObj, authResult, cancelToken), Times.Once);
         checkerMock.Verify(e => e.CheckAuthorization(requestObj, cancelToken), Times.Once);
+        accessorMock.VerifySet(e => e.AuthorizationResult = It.IsAny<RequestAuthorizationResult>(), Times.Once);
     }
 }

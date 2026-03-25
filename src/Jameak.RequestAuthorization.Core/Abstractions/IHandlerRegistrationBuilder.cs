@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Jameak.RequestAuthorization.Core.Results;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Jameak.RequestAuthorization.Core.Abstractions;
@@ -188,4 +189,42 @@ public interface IHandlerRegistrationBuilder
     public IHandlerRegistrationBuilder WithAuthorizedResultHandler<
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler>()
         where THandler : class, IAuthorizedResultHandler;
+
+    /// <summary>
+    /// Registers a requirement handler using a delegate.
+    /// </summary>
+    /// <typeparam name="TRequirement">The requirement type handled by the delegate.</typeparam>
+    /// <param name="handler">A delegate that evaluates the requirement.</param>
+    /// <returns>The builder for chaining further calls.</returns>
+    IHandlerRegistrationBuilder AddRequirementHandlerDelegate<TRequirement>(
+        Func<IServiceProvider, TRequirement, Task<RequestAuthorizationResult>> handler)
+        where TRequirement : IRequestAuthorizationRequirement;
+
+    /// <summary>
+    /// Registers a requirement handler using a delegate.
+    /// </summary>
+    /// <typeparam name="TRequirement">The requirement type handled by the delegate.</typeparam>
+    /// <param name="handler">A delegate that evaluates the requirement.</param>
+    /// <returns>The builder for chaining further calls.</returns>
+    IHandlerRegistrationBuilder AddRequirementHandlerDelegate<TRequirement>(
+        Func<TRequirement, Task<RequestAuthorizationResult>> handler)
+        where TRequirement : IRequestAuthorizationRequirement;
+
+    /// <summary>
+    /// Registers a requirement builder using a delegate.
+    /// </summary>
+    /// <typeparam name="TRequest">The request type used by the delegate.</typeparam>
+    /// <param name="builder">A delegate that creates a requirement for the specified request type.</param>
+    /// <returns>The builder for chaining further calls.</returns>
+    IHandlerRegistrationBuilder AddRequirementBuilderDelegate<TRequest>(
+        Func<IServiceProvider, TRequest, Task<IRequestAuthorizationRequirement>> builder);
+
+    /// <summary>
+    /// Registers a requirement builder using a delegate.
+    /// </summary>
+    /// <typeparam name="TRequest">The request type used by the delegate.</typeparam>
+    /// <param name="builder">A delegate that creates a requirement for the specified request type.</param>
+    /// <returns>The builder for chaining further calls.</returns>
+    IHandlerRegistrationBuilder AddRequirementBuilderDelegate<TRequest>(
+        Func<TRequest, Task<IRequestAuthorizationRequirement>> builder);
 }

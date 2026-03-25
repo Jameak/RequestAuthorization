@@ -30,6 +30,7 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
     {
         RegisterWithLifetime<IRequestAuthorizationExecutor, RequestAuthorizationExecutor>();
         Services.AddSingleton<AuthorizationHandlerRegistry>();
+        Services.AddSingleton<IRequestAuthorizationResultAccessor, RequestAuthorizationResultAccessor>();
         AddRequirementHandlerType<AllRequirementHandler, AllRequirement>();
         AddRequirementHandlerType<AnyRequirementHandler, AnyRequirement>();
         RegisterWithLifetime(typeof(IAuthorizationPipelineStep<,>), typeof(AuthorizationPipelineStep<,>));
@@ -191,7 +192,7 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
             throw new ArgumentException($"Type-argument '{nameof(builderType)}' type '{builderType}' must implement {nameof(IRequestAuthorizationRequirementBuilder<>)}<T> where T is assignable from the type-argument '{nameof(requestType)}' type '{requestType}'.", nameof(builderType));
         }
 
-        // Builder may handle request type > 1. That is ok, we simply register with exactly the request type the user specified.
+        // builderHandlesRequestType.Count may be > 1. That is ok, we simply register with exactly the request type the user specified.
         ThrowIfAbstractOrInterfaceOrOpenGeneric(builderType, nameof(builderType));
         RegisterWithLifetime(typeof(IRequestAuthorizationRequirementBuilder<>).MakeGenericType(requestType), builderType);
         return this;
@@ -431,5 +432,41 @@ internal sealed class HandlerRegistrationBuilder : IHandlerRegistrationBuilder
         {
             throw new AssemblyScanningRegistrationException($"Concrete builder type '{concreteBuilderType}' is not assignable from {nameof(IRequestAuthorizationRequirementBuilder<>)}<{requestType.FullName ?? requestType.Name}>.");
         }
+    }
+
+    [SuppressMessage("Usage", "MA0015:Specify the parameter name in ArgumentException", Justification = "Argument exceptions related to generic params")]
+    [SuppressMessage("Usage", "S3928:Parameter names used into ArgumentException constructors should match an existing one", Justification = "Argument exceptions related to generic params")]
+    public IHandlerRegistrationBuilder AddRequirementHandlerDelegate<TRequirement>(Func<IServiceProvider, TRequirement, Task<RequestAuthorizationResult>> handler)
+        where TRequirement : IRequestAuthorizationRequirement
+    {
+        if (typeof(TRequirement) == typeof(IRequestAuthorizationRequirement))
+        {
+            throw new ArgumentException($"Generic argument '{nameof(TRequirement)}' must inherit from {nameof(IRequestAuthorizationRequirement)}.", nameof(TRequirement));
+        }
+
+        FuncRequirementHandler<TRequirement> Factory(IServiceProvider sp) => new(sp, handler);
+        Services.Add(new ServiceDescriptor(typeof(FuncRequirementHandler<TRequirement>), Factory, ServiceLifetime));
+        Services.AddSingleton(new AuthorizationHandlerRegistrar([(typeof(FuncRequirementHandler<TRequirement>), typeof(TRequirement))]));
+
+        return this;
+    }
+
+    public IHandlerRegistrationBuilder AddRequirementHandlerDelegate<TRequirement>(Func<TRequirement, Task<RequestAuthorizationResult>> handler)
+        where TRequirement : IRequestAuthorizationRequirement
+    {
+        return AddRequirementHandlerDelegate<TRequirement>((_, requirement) => handler(requirement));
+    }
+
+    public IHandlerRegistrationBuilder AddRequirementBuilderDelegate<TRequest>(Func<IServiceProvider, TRequest, Task<IRequestAuthorizationRequirement>> builder)
+    {
+        FuncRequirementBuilder<TRequest> Factory(IServiceProvider sp) => new(sp, builder);
+        Services.Add(new ServiceDescriptor(typeof(IRequestAuthorizationRequirementBuilder<TRequest>), Factory, ServiceLifetime));
+
+        return this;
+    }
+
+    public IHandlerRegistrationBuilder AddRequirementBuilderDelegate<TRequest>(Func<TRequest, Task<IRequestAuthorizationRequirement>> builder)
+    {
+        return AddRequirementBuilderDelegate<TRequest>((_, request) => builder(request));
     }
 }

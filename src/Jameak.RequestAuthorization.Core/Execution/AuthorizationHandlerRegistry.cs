@@ -18,6 +18,7 @@ internal sealed class AuthorizationHandlerRegistry
         {
             if (map.TryGetValue(typeTuple.requirementType, out var alreadyRegisteredHandlerType))
             {
+                // Allow duplicate registrations of handlers for the same requirement as long as they are the same handler-type.
                 if (alreadyRegisteredHandlerType == typeTuple.handlerType)
                 {
                     continue;

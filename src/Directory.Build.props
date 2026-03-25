@@ -3,11 +3,15 @@
     
     <PropertyGroup>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
-        <NoWarn Condition="'$(Configuration)'=='DEBUG'">$(NoWarn);CS1591</NoWarn>
+        <NoWarn Condition="'$(Configuration)'=='DEBUG'">$(NoWarn);CS1591;RS0016</NoWarn>
     </PropertyGroup>
     
     <ItemGroup>
         <PackageReference Include="Meziantou.Analyzer">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

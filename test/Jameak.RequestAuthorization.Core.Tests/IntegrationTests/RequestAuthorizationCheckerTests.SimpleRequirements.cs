@@ -11,14 +11,27 @@ namespace Jameak.RequestAuthorization.Core.Tests.IntegrationTests;
 
 public partial class RequestAuthorizationCheckerTests
 {
-    [Fact]
-    public async Task SuccessfulRequirementProducesAuthorized()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task SuccessfulRequirementProducesAuthorized(bool useDelegateLogic)
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddRequestAuthorizationCore()
-            .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
-            .AddRequirementBuilderType<AlwaysSuccessRequirementBuilder, TestRequest>();
+        var serviceBuilder = serviceCollection.AddRequestAuthorizationCore();
+        if (useDelegateLogic)
+        {
+            serviceBuilder
+                .AddRequirementHandlerDelegate<AlwaysSuccessRequirement>((requirement) => Task.FromResult(RequestAuthorizationResult.Success(requirement)))
+                .AddRequirementBuilderDelegate<TestRequest>((request) => Task.FromResult<IRequestAuthorizationRequirement>(new AlwaysSuccessRequirement()));
+        }
+        else
+        {
+            serviceBuilder
+                .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
+                .AddRequirementBuilderType<AlwaysSuccessRequirementBuilder, TestRequest>();
+        }
+
         var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
@@ -28,14 +41,28 @@ public partial class RequestAuthorizationCheckerTests
         Assert.True(checkResult.IsAuthorized);
     }
 
-    [Fact]
-    public async Task FailingRequirementProducesUnauthorized()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task FailingRequirementProducesUnauthorized(bool useDelegateLogic)
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddRequestAuthorizationCore()
-            .AddRequirementHandlerType<AlwaysFailureRequirementHandler, AlwaysFailureRequirement>()
-            .AddRequirementBuilderType<AlwaysFailureRequirementBuilder, TestRequest>();
+
+        var serviceBuilder = serviceCollection.AddRequestAuthorizationCore();
+        if (useDelegateLogic)
+        {
+            serviceBuilder
+                .AddRequirementHandlerDelegate<AlwaysFailureRequirement>((requirement) => Task.FromResult(RequestAuthorizationResult.Fail(requirement)))
+                .AddRequirementBuilderDelegate<TestRequest>((request) => Task.FromResult<IRequestAuthorizationRequirement>(new AlwaysFailureRequirement()));
+        }
+        else
+        {
+            serviceBuilder
+                .AddRequirementHandlerType<AlwaysFailureRequirementHandler, AlwaysFailureRequirement>()
+                .AddRequirementBuilderType<AlwaysFailureRequirementBuilder, TestRequest>();
+        }
+
         var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
@@ -45,13 +72,23 @@ public partial class RequestAuthorizationCheckerTests
         Assert.False(checkResult.IsAuthorized);
     }
 
-    [Fact]
-    public async Task RequirementBuilderThatCrashesProducesUnauthorizedWithDetails()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task RequirementBuilderThatCrashesProducesUnauthorizedWithDetails(bool useDelegateLogic)
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddRequestAuthorizationCore()
-            .AddRequirementBuilderType<RequirementBuilderThatCrashesOnBuild, TestRequest>();
+        var serviceBuilder = serviceCollection.AddRequestAuthorizationCore();
+        if (useDelegateLogic)
+        {
+            serviceBuilder.AddRequirementBuilderDelegate<TestRequest>((request) => throw new Exception(RequirementBuilderThatCrashesOnBuild.CrashMessage));
+        }
+        else
+        {
+            serviceBuilder.AddRequirementBuilderType<RequirementBuilderThatCrashesOnBuild, TestRequest>();
+        }
+
         var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
@@ -63,14 +100,27 @@ public partial class RequestAuthorizationCheckerTests
         Assert.Equal(typeof(RequirementBuildingMustNotThrowExceptionRequirement), checkResult.Requirement.GetType());
     }
 
-    [Fact]
-    public async Task CrashingRequirementHandlerProducesUnauthorizedWithDetails()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task CrashingRequirementHandlerProducesUnauthorizedWithDetails(bool useDelegateLogic)
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddRequestAuthorizationCore()
-            .AddRequirementHandlerType<CrashingRequirementHandler, CrashingRequirement>()
-            .AddRequirementBuilderType<CrashingRequirementBuilder, TestRequest>();
+        var serviceBuilder = serviceCollection.AddRequestAuthorizationCore();
+        if (useDelegateLogic)
+        {
+            serviceBuilder
+                .AddRequirementHandlerDelegate<CrashingRequirement>((requirement) => throw new Exception(CrashingRequirementHandler.CrashMessage))
+                .AddRequirementBuilderDelegate<TestRequest>((request) => Task.FromResult<IRequestAuthorizationRequirement>(new CrashingRequirement()));
+        }
+        else
+        {
+            serviceBuilder
+                .AddRequirementHandlerType<CrashingRequirementHandler, CrashingRequirement>()
+                .AddRequirementBuilderType<CrashingRequirementBuilder, TestRequest>();
+        }
+
         var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act
@@ -132,15 +182,25 @@ public partial class RequestAuthorizationCheckerTests
         Assert.True(checkResult.IsAuthorized);
     }
 
-    [Fact]
-    public async Task RequirementWithDifferentHandlerTypesForSameRequirementRegisteredMultipleTimesThrowsException()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task RequirementWithDifferentHandlerTypesForSameRequirementRegisteredMultipleTimesThrowsException(bool useDelegateLogic)
     {
         // Arrange
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddRequestAuthorizationCore()
+        var serviceBuilder = serviceCollection.AddRequestAuthorizationCore()
             .AddRequirementBuilderType<AlwaysSuccessRequirementBuilder, TestRequest>()
-            .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>()
-            .AddRequirementHandlerType<AnotherHandlerAlsoProcessingAlwaysSuccessRequirements, AlwaysSuccessRequirement>();
+            .AddRequirementHandlerType<AlwaysSuccessRequirementHandler, AlwaysSuccessRequirement>();
+        if (useDelegateLogic)
+        {
+            serviceBuilder.AddRequirementHandlerDelegate<AlwaysSuccessRequirement>((requirement) => Task.FromResult(RequestAuthorizationResult.Success(requirement)));
+        }
+        else
+        {
+            serviceBuilder.AddRequirementHandlerType<AnotherHandlerAlsoProcessingAlwaysSuccessRequirements, AlwaysSuccessRequirement>();
+        }
+
         var service = serviceCollection.BuildServiceProvider(new ServiceProviderOptions() { ValidateOnBuild = true, ValidateScopes = true });
 
         // Act & Assert

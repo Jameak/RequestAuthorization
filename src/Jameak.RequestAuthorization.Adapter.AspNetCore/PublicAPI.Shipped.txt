@@ -1,0 +1,19 @@
+﻿#nullable enable
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirement
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirement.AspNetAuthorizationPolicyRequirement(Microsoft.AspNetCore.Authorization.AuthorizationPolicy! policy, object? resource) -> void
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirement.AspNetAuthorizationPolicyRequirement(string! policyName, object? resource) -> void
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirement.Policy.get -> Microsoft.AspNetCore.Authorization.AuthorizationPolicy?
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirement.PolicyName.get -> string?
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirement.Resource.get -> object?
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirementHandler
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirementHandler.AspNetAuthorizationPolicyRequirementHandler(Microsoft.AspNetCore.Authorization.IAuthorizationService! authService, Microsoft.AspNetCore.Http.IHttpContextAccessor! httpContextAccessor) -> void
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationRequirement
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationRequirement.AspNetAuthorizationRequirement(System.Collections.Generic.IReadOnlyList<Microsoft.AspNetCore.Authorization.IAuthorizationRequirement!>! requirements, object? resource) -> void
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationRequirement.Requirements.get -> System.Collections.Generic.IReadOnlyList<Microsoft.AspNetCore.Authorization.IAuthorizationRequirement!>!
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationRequirement.Resource.get -> object?
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationRequirementHandler
+Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationRequirementHandler.AspNetAuthorizationRequirementHandler(Microsoft.AspNetCore.Authorization.IAuthorizationService! authService, Microsoft.AspNetCore.Http.IHttpContextAccessor! httpContextAccessor) -> void
+Jameak.RequestAuthorization.Adapter.AspNetCore.HandlerRegistrationBuilderExtensions
+override Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirementHandler.CheckRequirementAsync(Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationPolicyRequirement! requirement, System.Threading.CancellationToken token) -> System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!>!
+override Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationRequirementHandler.CheckRequirementAsync(Jameak.RequestAuthorization.Adapter.AspNetCore.AspNetAuthorizationRequirement! requirement, System.Threading.CancellationToken token) -> System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!>!
+static Jameak.RequestAuthorization.Adapter.AspNetCore.HandlerRegistrationBuilderExtensions.AddAspNetAdapter(this Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder! builder) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
