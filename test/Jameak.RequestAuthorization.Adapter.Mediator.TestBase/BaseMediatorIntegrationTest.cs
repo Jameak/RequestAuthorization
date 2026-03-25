@@ -57,10 +57,18 @@ public class BaseMediatorIntegrationTest
 
     public class SampleRequestHandler : IRequestHandler<SampleRequest, SampleResponse>
     {
+        private readonly IRequestAuthorizationResultAccessor _authorizationResultAccessor;
+
+        public SampleRequestHandler(IRequestAuthorizationResultAccessor authorizationResultAccessor)
+        {
+            _authorizationResultAccessor = authorizationResultAccessor;
+        }
+
         public async ValueTask<SampleResponse> Handle(
             SampleRequest request,
             CancellationToken cancellationToken)
         {
+            Assert.NotNull(_authorizationResultAccessor.AuthorizationResult);
             return new SampleResponse();
         }
     }
@@ -129,8 +137,16 @@ public class BaseMediatorIntegrationTest
 
     public class SampleVoidRequestHandler : IRequestHandler<SampleVoidRequest>
     {
+        private readonly IRequestAuthorizationResultAccessor _authorizationResultAccessor;
+
+        public SampleVoidRequestHandler(IRequestAuthorizationResultAccessor authorizationResultAccessor)
+        {
+            _authorizationResultAccessor = authorizationResultAccessor;
+        }
+
         public ValueTask<Unit> Handle(SampleVoidRequest request, CancellationToken cancellationToken)
         {
+            Assert.NotNull(_authorizationResultAccessor.AuthorizationResult);
             return Unit.ValueTask;
         }
     }
@@ -201,8 +217,16 @@ public class BaseMediatorIntegrationTest
 
     public class SampleStreamRequestHandler : IStreamRequestHandler<SampleStreamRequest, SampleStreamResponse>
     {
+        private readonly IRequestAuthorizationResultAccessor _authorizationResultAccessor;
+
+        public SampleStreamRequestHandler(IRequestAuthorizationResultAccessor authorizationResultAccessor)
+        {
+            _authorizationResultAccessor = authorizationResultAccessor;
+        }
+
         public async IAsyncEnumerable<SampleStreamResponse> Handle(SampleStreamRequest request, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
+            Assert.NotNull(_authorizationResultAccessor.AuthorizationResult);
             yield return new SampleStreamResponse();
             yield return new SampleStreamResponse();
         }

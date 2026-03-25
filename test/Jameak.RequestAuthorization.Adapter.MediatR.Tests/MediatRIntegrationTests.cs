@@ -74,8 +74,16 @@ public class MediatRIntegrationTests
 
     public class SampleRequestHandler : IRequestHandler<SampleRequest, SampleResponse>
     {
+        private readonly IRequestAuthorizationResultAccessor _authorizationResultAccessor;
+
+        public SampleRequestHandler(IRequestAuthorizationResultAccessor authorizationResultAccessor)
+        {
+            _authorizationResultAccessor = authorizationResultAccessor;
+        }
+
         public Task<SampleResponse> Handle(SampleRequest request, CancellationToken cancellationToken)
         {
+            Assert.NotNull(_authorizationResultAccessor.AuthorizationResult);
             return Task.FromResult(new SampleResponse());
         }
     }
@@ -161,8 +169,16 @@ public class MediatRIntegrationTests
 
     public class SampleVoidRequestHandler : IRequestHandler<SampleVoidRequest>
     {
+        private readonly IRequestAuthorizationResultAccessor _authorizationResultAccessor;
+
+        public SampleVoidRequestHandler(IRequestAuthorizationResultAccessor authorizationResultAccessor)
+        {
+            _authorizationResultAccessor = authorizationResultAccessor;
+        }
+
         public Task Handle(SampleVoidRequest request, CancellationToken cancellationToken)
         {
+            Assert.NotNull(_authorizationResultAccessor.AuthorizationResult);
             return Task.CompletedTask;
         }
     }
@@ -246,8 +262,16 @@ public class MediatRIntegrationTests
 
     public class SampleStreamRequestHandler : IStreamRequestHandler<SampleStreamRequest, SampleStreamResponse>
     {
+        private readonly IRequestAuthorizationResultAccessor _authorizationResultAccessor;
+
+        public SampleStreamRequestHandler(IRequestAuthorizationResultAccessor authorizationResultAccessor)
+        {
+            _authorizationResultAccessor = authorizationResultAccessor;
+        }
+
         public async IAsyncEnumerable<SampleStreamResponse> Handle(SampleStreamRequest request, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
+            Assert.NotNull(_authorizationResultAccessor.AuthorizationResult);
             yield return new SampleStreamResponse();
             yield return new SampleStreamResponse();
         }

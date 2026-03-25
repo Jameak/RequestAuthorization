@@ -2,7 +2,7 @@
 
 namespace Jameak.RequestAuthorization.Core.Results;
 
-internal class RequestAuthorizationResultAccessor : IRequestAuthorizationResultAccessor
+internal sealed class RequestAuthorizationResultAccessor : IRequestAuthorizationResultAccessor
 {
     private static readonly AsyncLocal<AuthResultHolder> s_authorizationResultCurrent = new();
 
