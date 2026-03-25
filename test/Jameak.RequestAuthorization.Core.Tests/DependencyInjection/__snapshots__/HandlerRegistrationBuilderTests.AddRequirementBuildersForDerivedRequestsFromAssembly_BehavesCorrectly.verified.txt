@@ -74,6 +74,10 @@
     ImplementationType: DefaultAuthorizedResultHandler
   },
   {
+    ServiceType: IRequestAuthorizationResultAccessor,
+    ImplementationType: RequestAuthorizationResultAccessor
+  },
+  {
     ServiceType: IUnauthorizedResultHandler,
     ImplementationType: DefaultUnauthorizedResultHandler
   },

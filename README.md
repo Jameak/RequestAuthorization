@@ -30,7 +30,7 @@ Need to integrate with a different mediator-style pipeline library? See [this se
   - Microsoft.AspNetCore.Authorization ≥ 10.0.0
   - Microsoft.AspNetCore.Http.Abstractions ≥ 2.3.0
 - **Jameak.RequestAuthorization.Adapter.Mediator**
-  - Mediator.Abstractions ≥ 3.0.1
+  - Mediator.Abstractions ≥ 3.0.2
 - **Jameak.RequestAuthorization.Adapter.MediatR**
   - MediatR ≥ 12.5.0
  

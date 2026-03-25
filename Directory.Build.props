@@ -11,10 +11,10 @@
     </PropertyGroup>
     
     <PropertyGroup>
-        <PackageVersionCore>1.0.0</PackageVersionCore>
-        <PackageVersionAdapterAspNetCore>1.0.0</PackageVersionAdapterAspNetCore>
-        <PackageVersionAdapterMediator>1.0.0</PackageVersionAdapterMediator>
-        <PackageVersionAdapterMediatR>1.0.0</PackageVersionAdapterMediatR>
+        <PackageVersionCore>1.1.0</PackageVersionCore>
+        <PackageVersionAdapterAspNetCore>1.1.0</PackageVersionAdapterAspNetCore>
+        <PackageVersionAdapterMediator>1.1.0</PackageVersionAdapterMediator>
+        <PackageVersionAdapterMediatR>1.1.0</PackageVersionAdapterMediatR>
     </PropertyGroup>
     
     <ItemGroup>

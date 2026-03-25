@@ -1,0 +1,109 @@
+﻿#nullable enable
+abstract Jameak.RequestAuthorization.Core.Abstractions.RequestAuthorizationHandlerBase<TRequirement>.CheckRequirementAsync(TRequirement requirement, System.Threading.CancellationToken token) -> System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!>!
+Jameak.RequestAuthorization.Core.Abstractions.IAuthorizationPipelineStep<TRequest, TResponse>
+Jameak.RequestAuthorization.Core.Abstractions.IAuthorizationPipelineStep<TRequest, TResponse>.Handle(TRequest message, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<TResponse>!>! next, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResponse>!
+Jameak.RequestAuthorization.Core.Abstractions.IAuthorizationStreamPipelineStep<TRequest, TResponse>
+Jameak.RequestAuthorization.Core.Abstractions.IAuthorizationStreamPipelineStep<TRequest, TResponse>.Handle(TRequest message, System.Func<System.Threading.CancellationToken, System.Collections.Generic.IAsyncEnumerable<TResponse>!>! next, System.Threading.CancellationToken cancellationToken) -> System.Collections.Generic.IAsyncEnumerable<TResponse>!
+Jameak.RequestAuthorization.Core.Abstractions.IAuthorizedResultHandler
+Jameak.RequestAuthorization.Core.Abstractions.IAuthorizedResultHandler.OnAuthorized<TRequest>(TRequest message, Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult! result, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Jameak.RequestAuthorization.Core.Abstractions.IGlobalRequestAuthorizationRequirementBuilder
+Jameak.RequestAuthorization.Core.Abstractions.IGlobalRequestAuthorizationRequirementBuilder.BuildRequirementAsync<TRequest>(TRequest request, System.Threading.CancellationToken token) -> System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!>!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddGlobalRequirementBuilderType(System.Type! globalHandlerType) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddGlobalRequirementBuilderType<TGlobalHandler>() -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddGlobalRequirementBuilderTypesFromAssembly(System.Reflection.Assembly! assembly, bool throwWhenNoValidTypesFound = true) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementBuilderDelegate<TRequest>(System.Func<System.IServiceProvider!, TRequest, System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!>!>! builder) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementBuilderDelegate<TRequest>(System.Func<TRequest, System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!>!>! builder) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementBuilderType(System.Type! builderType, System.Type! requestType) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementBuilderType<TBuilder, TRequest>() -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementBuilderTypeForDerivedRequestsFromAssembly(System.Type! builderType, System.Type! requestBaseType, System.Reflection.Assembly! assembly, bool throwWhenNoValidTypesFound = true) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementBuilderTypesFromAssembly(System.Reflection.Assembly! assembly, bool throwWhenNoValidTypesFound = true) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementHandlerDelegate<TRequirement>(System.Func<System.IServiceProvider!, TRequirement, System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!>!>! handler) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementHandlerDelegate<TRequirement>(System.Func<TRequirement, System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!>!>! handler) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementHandlerType(System.Type! handlerType, System.Type! requirementType) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementHandlerType<THandler, TRequirement>() -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.AddRequirementHandlerTypesFromAssembly(System.Reflection.Assembly! assembly, bool throwWhenNoValidTypesFound = true) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.ServiceLifetime.get -> Microsoft.Extensions.DependencyInjection.ServiceLifetime
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.WithAuthorizedResultHandler<THandler>() -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder.WithUnauthorizedResultHandler<THandler>() -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement
+Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirementBuilder<TRequest>
+Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirementBuilder<TRequest>.BuildRequirementAsync(TRequest request, System.Threading.CancellationToken token) -> System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!>!
+Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationResultAccessor
+Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationResultAccessor.AuthorizationResult.get -> Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult?
+Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationResultAccessor.AuthorizationResult.set -> void
+Jameak.RequestAuthorization.Core.Abstractions.IUnauthorizedResultHandler
+Jameak.RequestAuthorization.Core.Abstractions.IUnauthorizedResultHandler.OnUnauthorized<TRequest, TResponse>(TRequest message, Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult! authResult, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResponse>!
+Jameak.RequestAuthorization.Core.Abstractions.IUnauthorizedResultHandler.OnUnauthorizedStream<TRequest, TResponse>(TRequest message, Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult! authResult, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<TResponse>!
+Jameak.RequestAuthorization.Core.Abstractions.RequestAuthorizationHandlerBase<TRequirement>
+Jameak.RequestAuthorization.Core.Abstractions.RequestAuthorizationHandlerBase<TRequirement>.CheckRequirementAsync(Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement! requirement, System.Threading.CancellationToken token) -> System.Threading.Tasks.Task<Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!>!
+Jameak.RequestAuthorization.Core.Abstractions.RequestAuthorizationHandlerBase<TRequirement>.RequestAuthorizationHandlerBase() -> void
+Jameak.RequestAuthorization.Core.Configuration.RequestAuthorizationOptions
+Jameak.RequestAuthorization.Core.Configuration.RequestAuthorizationOptions.RequestAuthorizationOptions() -> void
+Jameak.RequestAuthorization.Core.Configuration.RequestAuthorizationOptions.RequirementBuilderValidation.get -> Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind
+Jameak.RequestAuthorization.Core.Configuration.RequestAuthorizationOptions.RequirementBuilderValidation.set -> void
+Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind
+Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind.AtLeastOneBuilder = 1 -> Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind
+Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind.ExactlyOneBuilder = 2 -> Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind
+Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind.ZeroOrMoreBuilders = 0 -> Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind
+Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind.ZeroOrOneBuilders = 3 -> Jameak.RequestAuthorization.Core.Configuration.RequirementBuilderValidationKind
+Jameak.RequestAuthorization.Core.DependencyInjection.ServiceCollectionExtensions
+Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnostic
+Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnostic.AuthorizationDiagnostic() -> void
+Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnostic.EvaluatedChildren.get -> System.Collections.Generic.IReadOnlyList<Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!>?
+Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnostic.EvaluatedChildren.init -> void
+Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnostic.SkippedChildren.get -> System.Collections.Generic.IReadOnlyList<Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!>?
+Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnostic.SkippedChildren.init -> void
+Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnosticExporter
+Jameak.RequestAuthorization.Core.Exceptions.AssemblyScanningRegistrationException
+Jameak.RequestAuthorization.Core.Exceptions.AssemblyScanningRegistrationException.AssemblyScanningRegistrationException(string! message) -> void
+Jameak.RequestAuthorization.Core.Exceptions.AssemblyScanningRegistrationException.AssemblyScanningRegistrationException(string! message, System.Exception! inner) -> void
+Jameak.RequestAuthorization.Core.Exceptions.CircularRequirementException
+Jameak.RequestAuthorization.Core.Exceptions.CircularRequirementException.CircularRequirementException(Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement! requirement) -> void
+Jameak.RequestAuthorization.Core.Exceptions.CircularRequirementException.Requirement.get -> Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!
+Jameak.RequestAuthorization.Core.Exceptions.InvalidBuilderRegistrationException
+Jameak.RequestAuthorization.Core.Exceptions.InvalidBuilderRegistrationException.InvalidBuilderRegistrationException(string! message) -> void
+Jameak.RequestAuthorization.Core.Exceptions.InvalidHandlerRegistrationException
+Jameak.RequestAuthorization.Core.Exceptions.InvalidHandlerRegistrationException.InvalidHandlerRegistrationException(string! message) -> void
+Jameak.RequestAuthorization.Core.Exceptions.MissingHandlerRegistrationException
+Jameak.RequestAuthorization.Core.Exceptions.MissingHandlerRegistrationException.MissingHandlerRegistrationException(string! message) -> void
+Jameak.RequestAuthorization.Core.Exceptions.RegisteredHandlerInstantiationFailureException
+Jameak.RequestAuthorization.Core.Exceptions.RegisteredHandlerInstantiationFailureException.RegisteredHandlerInstantiationFailureException(string! message, System.Exception! inner) -> void
+Jameak.RequestAuthorization.Core.Exceptions.UnauthorizedException
+Jameak.RequestAuthorization.Core.Exceptions.UnauthorizedException.AuthResult.get -> Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!
+Jameak.RequestAuthorization.Core.Exceptions.UnauthorizedException.UnauthorizedException(Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult! authResult) -> void
+Jameak.RequestAuthorization.Core.Requirements.AllRequirement
+Jameak.RequestAuthorization.Core.Requirements.AllRequirement.Requirements.get -> System.Collections.Generic.IReadOnlyList<Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!>!
+Jameak.RequestAuthorization.Core.Requirements.AllRequirement.Requirements.init -> void
+Jameak.RequestAuthorization.Core.Requirements.AnyRequirement
+Jameak.RequestAuthorization.Core.Requirements.AnyRequirement.Requirements.get -> System.Collections.Generic.IReadOnlyList<Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!>!
+Jameak.RequestAuthorization.Core.Requirements.AnyRequirement.Requirements.init -> void
+Jameak.RequestAuthorization.Core.Requirements.Require
+Jameak.RequestAuthorization.Core.Requirements.RequireExtensions
+Jameak.RequestAuthorization.Core.Requirements.RequirementBuildingMustNotThrowExceptionRequirement
+Jameak.RequestAuthorization.Core.Requirements.RequirementBuildingProducedNoRequirements
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.Context.get -> object?
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.Context.init -> void
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.Diagnostic.get -> Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnostic?
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.Diagnostic.init -> void
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.FailureException.get -> System.Exception?
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.FailureException.init -> void
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.FailureReason.get -> string?
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.FailureReason.init -> void
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.IsAuthorized.get -> bool
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.IsAuthorized.init -> void
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.RequestAuthorizationResult() -> void
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.Requirement.get -> Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!
+Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.Requirement.init -> void
+override Jameak.RequestAuthorization.Core.Requirements.AllRequirement.ToString() -> string!
+override Jameak.RequestAuthorization.Core.Requirements.AnyRequirement.ToString() -> string!
+static Jameak.RequestAuthorization.Core.DependencyInjection.ServiceCollectionExtensions.AddRequestAuthorizationCore(this Microsoft.Extensions.DependencyInjection.IServiceCollection! serviceCollection, System.Action<Jameak.RequestAuthorization.Core.Configuration.RequestAuthorizationOptions!>? configure = null, Microsoft.Extensions.DependencyInjection.ServiceLifetime serviceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Scoped) -> Jameak.RequestAuthorization.Core.Abstractions.IHandlerRegistrationBuilder!
+static Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnosticExporter.ToGraphvizDot(Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult! root) -> string!
+static Jameak.RequestAuthorization.Core.Requirements.Require.All(params Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement![]! requirements) -> Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!
+static Jameak.RequestAuthorization.Core.Requirements.Require.Any(params Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement![]! requirements) -> Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!
+static Jameak.RequestAuthorization.Core.Requirements.RequireExtensions.And(this Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement! left, Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement! right) -> Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!
+static Jameak.RequestAuthorization.Core.Requirements.RequireExtensions.Or(this Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement! left, Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement! right) -> Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement!
+static Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.Fail(Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement! requirement, string? failureReason = null, System.Exception? failureException = null, Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnostic? diagnostic = null, object? context = null) -> Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!
+static Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult.Success(Jameak.RequestAuthorization.Core.Abstractions.IRequestAuthorizationRequirement! requirement, Jameak.RequestAuthorization.Core.Diagnostics.AuthorizationDiagnostic? diagnostic = null, object? context = null) -> Jameak.RequestAuthorization.Core.Results.RequestAuthorizationResult!
