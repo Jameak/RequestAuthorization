@@ -176,8 +176,66 @@ builder.Services
 ```
 
 > [!IMPORTANT]
-> To register the authorization pipeline for your mediator-library of choice, see the [Adapters section](#adapters).
+> To register the authorization pipeline for your mediator-library of choice, see the [Adapters section](#adapter-libraries).
 
+### Authorization evaluation overview
+This sequence diagram provides a high-level view of the steps that are performed during authorization:
+```mermaid
+sequenceDiagram
+    actor Caller
+    participant Mediator as Mediator-style Pipeline
+    participant AuthPipeline as Authorization Behavior
+    participant Builders as Requirement Builders
+    participant Handlers as Requirement Handlers
+    participant Handler as Request Handler
+
+    Caller->>Mediator: Send(request)
+    activate Mediator
+
+    Mediator->>AuthPipeline: Handle(request)
+    activate AuthPipeline
+
+    loop For each requirement builder
+        AuthPipeline->>Builders: BuildRequirementAsync(request)
+        activate Builders
+        Builders-->>AuthPipeline: IRequestAuthorizationRequirement
+        deactivate Builders
+    end
+
+    AuthPipeline->>AuthPipeline: Aggregate authorization requirements
+
+    loop For each requirement
+        AuthPipeline->>Handlers: CheckRequirementAsync(requirement)
+        activate Handlers
+        Handlers-->>AuthPipeline: RequestAuthorizationResult
+        deactivate Handlers
+    end
+
+    AuthPipeline->>AuthPipeline: Aggregate authorization results
+
+    alt All requirements authorized
+        AuthPipeline->>AuthPipeline: Handle authorization success
+        AuthPipeline->>Handler: Handle(request)
+        activate Handler
+        Handler-->>AuthPipeline: Response
+        deactivate Handler
+
+        AuthPipeline-->>Mediator: Response
+
+        Mediator-->>Caller: Response
+
+    else Any requirement not authorized
+        AuthPipeline->>AuthPipeline: Handle authorization failure
+
+        AuthPipeline-->>Mediator: Unauthorized result
+
+        Mediator-->>Caller: Unauthorized result
+    end
+    deactivate Mediator
+    deactivate AuthPipeline
+```
+
+When authorization needs to be evaluated for a specific request the library will use the **requirement builders** to build **requirements**, evaluate them via the **requirement handlers**, and only proceed to the request handler if all requirements were evaluated successfully.
 
 ## Global requirements
 The library supports global requirements that are evaluated for every requests. Global requirement builders must implement the `IGlobalRequestAuthorizationRequirementBuilder` interface.
